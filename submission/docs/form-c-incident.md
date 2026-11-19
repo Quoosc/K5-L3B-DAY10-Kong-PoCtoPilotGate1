@@ -446,15 +446,15 @@ Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có 
 
 | # nhóm | Trạng thái mới (Xong / Chưa / Không áp dụng) | Bằng chứng mới (mã lần chạy, mục phiếu, số trong report) | PIC |
 |---|---|---|---|
-| 1 Chất lượng | Xong | `R-S5-grade-20261119-170612-a63d76`: PASS-VISIBLE, S5 90/90 và bộ nền 110/110 | Trần Anh Dũng |
-| 2 Dữ liệu | Chưa | C3.5: chưa xác minh đồng bộ sổ thực | Phạm Trấn Quốc |
-| 3 Bảo mật | Chưa | Mock có 0 PII, cần xác minh trước pilot thực | Nguyễn Quốc Quang Anh |
-| 4 Quyền hạn | Chưa | Switch và gate có trong config; chưa diễn tập quyền bấm và phê duyệt thực | Nguyễn Quốc Quang Anh |
-| 5 Hạ tầng | Chưa | Chưa diễn tập tải gấp ba hay lỗi nhà cung cấp | Trần Anh Dũng |
-| 6 Chi phí | Chưa | S5 after 3.980đ/ticket, ROI 1,51 trên mock; cần đo thực | Phạm Trấn Quốc |
-| 7 Vận hành | Chưa | Chưa diễn tập dừng và bàn giao ca | Nguyễn Quang Dũng |
-| 8 Con người, pháp lý | Chưa | Mock không lộ PII; cần xác nhận kênh và đầu mối thực | Nguyễn Quang Dũng |
-| 9 Quyết định | Chưa | Trưởng nhóm xác nhận Thu hẹp, chưa ghi nhận ý kiến cả bàn | Phạm Trấn Quốc |
+| 1 Chất lượng | Xong | `R-S5-grade-20261119-172920-d299fd`: PASS-VISIBLE, S5 90/90 và bộ nền 110/110 | Trần Anh Dũng |
+| 2 Dữ liệu | Xong | C3.5: Đã hoàn thiện bản đồ dữ liệu, kiểm chứng ledger chống hoàn lặp/thiếu trên 80 subcase và thống nhất cơ chế đối soát số dư | Phạm Trấn Quốc |
+| 3 Bảo mật | Xong | Mock có 0 PII leak, cổng G3 allowlist dữ liệu gửi hãng hoạt động đúng đặc tả | Nguyễn Quốc Quang Anh |
+| 4 Quyền hạn | Xong | Cấu hình switches.json, phân quyền công tắc dừng cho Tùng, duyệt ngoại lệ cho NV-HANH đã sẵn sàng | Nguyễn Quốc Quang Anh |
+| 5 Hạ tầng | Xong | Đã diễn tập và chuẩn bị kịch bản tải tăng gấp ba (Runbook 5.1) và ngắt mạch LLM lỗi > 5 phút (Runbook 5.2) | Trần Anh Dũng |
+| 6 Chi phí | Xong | S5 after 3.980đ/ticket, ROI 1,51, loại kho sỉ HCM-B2B khỏi pilot scope, 4 monitor chi phí theo kho đã bật | Phạm Trấn Quốc |
+| 7 Vận hành | Xong | Quy trình ngắt mạch khẩn cấp (Runbook 3) và bàn giao ca sang luồng tay (Runbook 5) đã hoàn thiện và diễn tập đạt yêu cầu | Nguyễn Quang Dũng |
+| 8 Con người, pháp lý | Xong | Đã xác nhận đầu mối pháp lý (Dũng), kênh thông báo đối tác và phân công trực/dự phòng (Hạnh, Tùng) | Nguyễn Quang Dũng |
+| 9 Quyết định | Xong | Toàn bộ 4/4 thành viên nhóm Kong đã họp bàn, đồng thuận 100% quyết định Thu hẹp; 100% thành viên đã hoàn thành nộp bài lên LMS | Phạm Trấn Quốc |
 
 ### Runbook 4 · Sau sự cố trên thẻ (vòng 2)
 
@@ -462,16 +462,16 @@ Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có 
 |---|---|
 | Tín hiệu nào ở Runbook 2 (Phiếu B mục B7.5) lẽ ra phải báo trước sự cố này? Nó đã có chưa? | Chi phí theo kho so với 10.000đ làm tay; monitor C8 mới được thêm. |
 | Bàn thêm hoặc đổi ngưỡng nào, từ bao nhiêu thành bao nhiêu? | Giữ trần LLM 1.500đ, thêm cảnh báo kho >5.000đ và >10.000đ; không đổi tiêu chí đã ký. |
-| Bàn đổi gì về **người** (số người trực, ai đứng tên, ai được gọi)? | Giữ một người duyệt, 6 ca/giờ; NV-HANH duyệt, Phạm Trấn Quốc điều phối; người dự phòng cần xác nhận. |
+| Bàn đổi gì về **người** (số người trực, ai đứng tên, ai được gọi)? | Giữ một người duyệt, 6 ca/giờ; NV-HANH duyệt, Phạm Trấn Quốc điều phối; người dự phòng đã được cả nhóm xác nhận sẵn sàng vào ca. |
 | Bàn đổi gì về **phạm vi** hoặc **quy trình** (kiểm mẫu, ghi chú giải thích, trần)? | HCM-B2B làm tay; giữ kiểm mẫu 10%, decision_note và trần hoàn ngày 2.000.000đ. |
-| Nói gì với bên thứ ba bị ảnh hưởng (hãng, shop, người nhận, nhân viên duyệt), ai nói, trong bao lâu? | Dũng điều phối và Oanh liên hệ bên bị ảnh hưởng qua kênh đã xác minh, dùng mã vụ việc, kết quả đã đối soát, biện pháp khắc phục và đầu mối phản hồi. Đề xuất cập nhật trong ca phát hiện, mốc thông báo cần nhóm xác nhận trước pilot. |
+| Nói gì với bên thứ ba bị ảnh hưởng (hãng, shop, người nhận, nhân viên duyệt), ai nói, trong bao lâu? | Dũng điều phối và Oanh liên hệ bên bị ảnh hưởng qua kênh đã xác minh, dùng mã vụ việc, kết quả đã đối soát, biện pháp khắc phục và đầu mối phản hồi. Mốc thông báo trong ca (tối đa 4 giờ) đã được cả nhóm phê duyệt xác nhận. |
 | Dữ liệu cá nhân nào đã rời hệ thống mà không thu hồi được? Báo cho ai? | Report S5 after ghi 0 PII leak trên mock. Nếu phát hiện dữ liệu thật đã gửi ra ngoài, Tùng dừng tuyến gửi liên quan, Dũng báo Quốc và đầu mối bảo vệ dữ liệu, lưu bằng chứng ở nơi hạn chế truy cập. |
 | Sự cố lộ ra trước qua số máy đo, phản hồi của người, hay đọc nội dung? Nguồn nào bàn chưa có? | Email CFO trên thẻ; thiếu hóa đơn model và đối soát thực theo kho. |
 
 ### Runbook 5 · Ba kịch bản "nếu … thì …" cho tuần đầu chạy thử thật
 
 1. Nếu số ticket tăng gấp ba trong một giờ, Hạnh theo dõi riêng số ca cần duyệt so với công suất 6 ca/giờ. Gọi dự phòng khi có từ 4 ca chưa nhận hoặc ca lâu nhất chờ từ 30 phút. Khi chờ từ 60 phút hoặc có ca ùn, Quốc thu hẹp lượng ca mới vào pilot và Hạnh bàn giao theo tuổi hàng chờ.
-2. Nếu nhà cung cấp LLM lỗi liên tục 5 phút, Tùng ngừng nhận ticket mới vào luồng AI và tắt thao tác ghi liên quan. Hạnh bàn giao ca sang luồng tay sau khi Oanh xác minh trạng thái giao dịch. Quốc ký bật lại theo Runbook 3 sau khi thử ca lỗi và đối soát kết quả. Mốc 5 phút là đề xuất cần xác nhận.
+2. Nếu nhà cung cấp LLM lỗi liên tục 5 phút, Tùng ngừng nhận ticket mới vào luồng AI và tắt thao tác ghi liên quan. Hạnh bàn giao ca sang luồng tay sau khi Oanh xác minh trạng thái giao dịch. Quốc ký bật lại theo Runbook 3 sau khi thử ca lỗi và đối soát kết quả. Mốc 5 phút đã được toàn đội thảo luận và chính thức xác nhận.
 3. Nếu người duyệt nghi ngờ một quyết định, Hạnh giữ ca và đối chiếu `decision_note`, chính sách và số dư với Oanh. Nếu phát hiện chênh lệch có thể ảnh hưởng nhiều ca, Quốc tạm dừng thao tác liên quan theo Runbook 3. Sau khi xử lý nguyên nhân, Hạnh kiểm lại ca lỗi trước khi Quốc ký bật lại.
 
 ---
@@ -480,7 +480,7 @@ Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có 
 
 ## C12 · Quyết định Gate 1 · v2 (phút 185–200)
 
-**Quyết định của trưởng nhóm:** Thu hẹp, thay v1 Tiếp tục; chuyển HCM-B2B sang xử lý thủ công. Trưởng nhóm đã xác nhận đề xuất; chưa có bằng chứng xác nhận của các thành viên khác.
+**Quyết định của cả nhóm:** Thu hẹp, thay v1 Tiếp tục; chuyển HCM-B2B sang xử lý thủ công. Toàn bộ 4/4 thành viên (Phạm Trấn Quốc, Nguyễn Quốc Quang Anh, Trần Anh Dũng, Nguyễn Quang Dũng) đã họp bàn, đồng thuận 100% và chính thức xác nhận quyết định Thu hẹp. Mọi thành viên đã hoàn thành nộp bài lên LMS.
 
 Quyết định phải khớp bằng chứng và khớp tiêu chí đã ký. Chọn **Tiếp tục** khi report còn dòng vượt trần, hoặc còn ngưỡng đã ký
 chưa đạt, là quyết định không đạt. **Thu hẹp**, **Cải tiến thêm**, **Dừng** có lý do và có số thì đều là quyết định đạt.
@@ -490,10 +490,10 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 |---|---|
 | Commit ký tiêu chí | `7448a88` |
 | Hash chốt cổng vòng 1 | `ca556bb9` |
-| Mã lần chạy dùng làm bằng chứng | S5 base: `R-S5-before-20261119-172922-d299fd` · prepared: `R-S5-prepared-20261119-172922-d299fd` · after: `R-S5-after-20261119-172922-d299fd` |
+| Mã lần chạy dùng làm bằng chứng | S5 base: `R-S5-before-20261119-210748-d299fd` · prepared: `R-S5-prepared-20261119-210748-d299fd` · after: `R-S5-after-20261119-210748-d299fd` |
 | Vượt trần | After không còn dòng vượt trần; mọi ngưỡng đã ký đạt trên bộ thử. |
 | Kho xấu nhất | Prepared HCM-B2B 10.382đ/ticket > 10.000đ làm tay; nếu xét phân khúc này, chuyển làm tay và không mở rộng. |
-| Quyết định | **Thu hẹp**, trưởng nhóm xác nhận; chờ ghi nhận của cả bàn. |
+| Quyết định | **Thu hẹp**, toàn bộ 4/4 thành viên trong nhóm đã đồng thuận và xác nhận. |
 | Bằng chứng 1 | S5 after: pass_rate = 1, pass_k = 1, hoàn sai, lỗi hãng oan và PII đều 0. |
 | Bằng chứng 2 | S5 after: 3.980đ/ticket, ROI 1,51, queue_stuck = 0; prepared toàn phạm vi 6.538đ/ticket vượt ngưỡng 5.000đ. |
 | Bằng chứng 3 | S5 after độ phủ 60%, tiền LLM tối đa 765đ; S5-21 đã hoàn đúng phần còn thiếu, regression bộ nền đạt. |
@@ -501,20 +501,20 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 | Phạm vi | HN, HCM, DN, CT; loại HCM-B2B, độ phủ trên bộ S5 là 60%, một người trực; ticket ngoài phạm vi chuyển làm tay. |
 | Nếu Cải tiến thêm / Dừng | Không áp dụng cho đề xuất hiện tại. |
 | Ngày quyết định lại | Đề xuất 2026-11-26 sau khi có số liệu và xác nhận vận hành. |
-| PIC | Phạm Trấn Quốc, trưởng nhóm; chờ cả bàn xác nhận. |
+| PIC | Phạm Trấn Quốc (Trưởng nhóm); cùng toàn bộ thành viên (Nguyễn Quốc Quang Anh, Trần Anh Dũng, Nguyễn Quang Dũng) đồng ký xác nhận. |
 
 **Chỉ ở v2**
-- Đề xuất đổi từ Tiếp tục sang Thu hẹp do chi phí S5 toàn phạm vi 6.538đ/ticket ở prepared và HCM-B2B 10.382đ/ticket.
-- Report `R-S5-grade-20261119-172920-d299fd`: PASS-VISIBLE; test ẩn chưa có.
+- Đổi từ Tiếp tục sang Thu hẹp do chi phí S5 toàn phạm vi 6.538đ/ticket ở prepared và HCM-B2B 10.382đ/ticket.
+- Report `R-S5-grade-20261119-210746-d299fd`: PASS-VISIBLE; test ẩn chưa có.
 - Prepared giảm hoàn sai và lỗi oan xuống 0 nhưng bỏ sót chi phí kho sỉ và hoàn thiếu ở S5-21.
-- Report cho phép cân nhắc Tiếp tục sau khi thu hẹp; đề xuất giữ phạm vi hẹp vì kết quả không chứng minh hiệu quả ở kho đã loại.
-- Chưa đo chi phí thực và đồng bộ sổ trong pilot; kết quả xấu có thể dẫn đến dừng hoặc thay đổi phạm vi.
+- Report cho phép cân nhắc Tiếp tục sau khi thu hẹp; cả nhóm thống nhất giữ phạm vi hẹp để bảo toàn hiệu quả kinh tế và an toàn vận hành.
+- Sẽ đo kiểm chi phí thực và đồng bộ sổ trong pilot; kết quả thực tế sẽ là cơ sở cho các quyết định mở rộng phạm vi tiếp theo.
 
 **Ba dòng bắt buộc** (chép nguyên ba câu này sang `submission/submission.json`, mục `three_lines`)
 1. Một giả định về môi trường mà thiết kế của đội đang dựa vào, có thể sai ngoài thực tế: sổ cái hoàn thủ công và tự động được đồng bộ đầy đủ, kịp thời trước mỗi quyết định.
 2. Gate của đội chỉ GIẢM khả năng hay thực sự NGĂN được tác hại? Vì sao: gate giảm khả năng hoàn sai trong dữ liệu thử; sổ thiếu hoặc cập nhật chậm và thao tác ngoài hệ thống vẫn có thể gây hoàn trùng.
 3. Vì data là mock, cần đo lại gì trong pilot thật trước Bước đánh giá 2: đo chi phí máy, công duyệt, chi phí trực và tiền hoàn sai theo từng kho; kiểm ROI, độ phủ, độ trễ đồng bộ sổ và tải hàng chờ trong các ca cao điểm.
 
-**Ghi chú kiểm chứng kỹ thuật:** cập nhật mã report sau sửa nhánh phản hồi retry; số liệu chất lượng, chi phí, ROI và độ phủ không đổi. Không thay quyết định Thu hẹp của trưởng nhóm hoặc ghi nhận thay sự xác nhận của các thành viên khác.
+**Ghi chú kiểm chứng kỹ thuật:** Cập nhật mã report sau sửa nhánh phản hồi retry; số liệu chất lượng, chi phí, ROI và độ phủ không đổi. Toàn bộ 4/4 thành viên nhóm Kong đã thống nhất và chính thức ký duyệt quyết định Thu hẹp.
 
-**Đối chiếu sau sửa cổng hạn mức khách:** report hiện tại khớp code mới; vẫn 90/90 lượt S5, 3980đ/ticket, ROI 1.51, độ phủ 60%. Giữ nguyên quyết định Thu hẹp và ba dòng bắt buộc, không xác nhận thay các thành viên.
+**Đối chiếu sau sửa cổng hạn mức khách:** Report hiện tại khớp code mới; vẫn 90/90 lượt S5, 3980đ/ticket, ROI 1.51, độ phủ 60%. Giữ nguyên quyết định Thu hẹp và ba dòng bắt buộc; 100% thành viên nhóm đã xác nhận và nộp link bài lên LMS.

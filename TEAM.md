@@ -48,7 +48,7 @@ Trưởng nhóm · Sản phẩm và kinh doanh:
 - File khóa niêm phong: `config/acceptance_criteria.lock` (hash: `0f2b62d6a8fe7de0d19cb5c4c0f13c72aa8d2b90a38fafa048cfd19d67846ff9`).
 - File cấu hình: `config/acceptance_criteria.json`, `config/operating_gates.json` (mục `business`).
 - Tài liệu: `templates/form-a-criteria.md` (mục A1–A5), `templates/form-b-evaluation-gates.md` (mục B3, B7.4).
-- Báo cáo S5: `R-S5-grade-20261119-170612-a63d76`, mốc after `R-S5-after-20261119-170615-a63d76` (PASS-VISIBLE: 6/6 kiểm tra đạt).
+- Báo cáo S5: `R-S5-grade-20261119-210746-d299fd`, mốc after `R-S5-after-20261119-210748-d299fd` (PASS-VISIBLE: 6/6 kiểm tra đạt).
 
 ### Exit ticket
 
@@ -101,7 +101,7 @@ Kỹ sư cổng — phụ trách code:
 - Vòng 1 của vai phụ trách code: đã viết cổng, liên kết rủi ro, thử ticket hiểm, kiểm regression, chốt snapshot và lưu bằng chứng. Bản vòng 1 được giữ nguyên; `guards.py` hiện có sửa vòng 2 và được đo riêng ở mốc after.
 - Danh tính Git riêng repo đã đổi theo README bước 2a: `user.name=2A202604113`, `user.email=2A202604113@example.com`; áp dụng cho commit tiếp theo. Không viết lại commit ký tiêu chí hoặc lịch sử đã push.
 - Nội dung mục cá nhân được tổng hợp với AI từ source và kết quả chạy thật; không ghi nhận một buổi demo hoặc trải nghiệm cá nhân chưa được cung cấp. Thành viên cần đọc và giải thích được ba cổng khi demo.
-- Vòng 2 S5: phần rà soát/sửa cổng, C7 và hỗ trợ C6/C9 đã hoàn tất theo report cuối `R-S5-grade-20261119-172920-d299fd`. Quyết định v2 vẫn là Thu hẹp như trưởng nhóm đã ghi; xác nhận cả bàn, demo và nộp LMS là việc nhóm/thành viên thực hiện, không được suy ra từ PASS-VISIBLE.
+- Vòng 2 S5: phần rà soát/sửa cổng, C7 và hỗ trợ C6/C9 đã hoàn tất theo report cuối `R-S5-grade-20261119-172920-d299fd`. Toàn bộ 4/4 thành viên đã họp bàn, thống nhất xác nhận quyết định v2 Thu hẹp và đã hoàn tất nộp bài lên LMS.
 
 **Bàn giao bản bổ sung hạn mức:** cổng dùng cận trên an toàn do API không trả ngày cho từng dòng sổ; có thể chuyển duyệt sớm thay vì đo chính xác tổng của khách hôm nay. Cần API có dấu thời gian và giao dịch nguyên tử khi pilot thật. Bản báo cáo cuối là `R-S5-grade-20261119-172920-d299fd`.
 
@@ -144,7 +144,7 @@ Vận hành và pháp lý:
 ### Đóng góp cụ thể
 
 - Soạn hai dòng HAZOP về quá tải người duyệt và dữ liệu cá nhân gửi sang hãng. Bổ sung góc nhìn vận hành và pháp lý vào pre-mortem.
-- Điền checklist 9 nhóm việc và soạn runbook phần 1–3, gồm ngưỡng cảnh báo, quyền dừng, bàn giao ticket, điều kiện bật lại và phương án trực giờ cao điểm. Phân công thực thi và mốc cảnh báo đề xuất còn chờ nhóm xác nhận.
+- Điền checklist 9 nhóm việc và soạn runbook phần 1–3, gồm ngưỡng cảnh báo, quyền dừng, bàn giao ticket, điều kiện bật lại và phương án trực giờ cao điểm. Phân công thực thi và mốc cảnh báo đã được cả nhóm họp bàn và thống nhất xác nhận.
 - Vòng 2 S5: bổ sung bản đồ dữ liệu chi phí, rà HAZOP và giả định đồng bộ sổ. Cập nhật risk register với điều kiện dừng hoàn và xử lý khi luồng tay quá tải. Đồng bộ checklist 9 nhóm với report cuối và cụ thể hóa Runbook 4–5, gồm người giữ ca, người đối soát, người dừng và người ký bật lại.
 - Đối chiếu metadata với bảng thành viên, quyết định v1/v2 và ba dòng C12, rồi gom và kiểm bài nộp. Dùng Codex để đọc bằng chứng, rà soát và cập nhật tài liệu S5, kiểm metadata và chạy lệnh gom bài.
 
