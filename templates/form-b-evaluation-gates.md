@@ -1,6 +1,6 @@
 # Phiếu B · Đo, rủi ro, cổng vòng 1 và quyết định v1 · Khối 2A + 2B + chốt (phút 65–115)
 
-**Bàn:** ______
+**Bàn:** K5-L3B-DAY10-Kong-PoCtoPilotGate1
 
 Tiêu chí đã ký ở Phiếu A. Từ phút 65 bàn mới được chạy trợ lý. Khối 2A (65–85) chưa sửa code hay config. Khối 2B (85–105) sửa
 `lab10/guards.py` và `config/operating_gates.json`. Phút 105–115 chốt cổng vòng 1 rồi viết quyết định v1. Sau phút 115 không sửa phiếu này
@@ -29,7 +29,7 @@ Mọi con số trong quyết định Gate 1 phải trỏ về một dòng ở đ
 
 | # | Mã lần chạy | Bộ ticket · mốc | Đổi MỘT thứ gì so với lần trước | pass_rate (khoảng tin cậy 95%) | pass_k | Hoàn sai (đ) · lỗi hãng oan · lộ dữ liệu | Tỉ lệ chuyển người | Kết luận (một câu) |
 |---|---|---|---|---|---|---|---|---|
-| 1 | | base · base | (baseline, chưa có cổng) | | | | | |
+| 1 | R-base-before-20261119-151558-f7046f | base · base | baseline, chưa có cổng | 0.9909 [0.9727, 1.0] | 0.9545 | 20000 · 1 · 0 | 0.2273 | Chưa đạt hai ngưỡng an toàn. |
 | 2 | | base · after | (cổng vòng 1, thử trước khi chốt) | | | | | |
 | 3 | | base · prepared | (cổng vòng 1 đã chốt) | | | | | |
 | 4 | | | | | | | | |
@@ -45,18 +45,18 @@ python3 -m lab10.eval --suite base --stage base --note "baseline"
 python3 -m lab10.gate --run runs/<mã lần chạy>/report.json
 ```
 
-- Mã lần chạy: `__________` (ghi cả vào B0 dòng 1)
-- Ngưỡng đã ký nào `[CHƯA]` đạt: …
-- Khối "kinh doanh và vận hành" ở cuối output: dòng nào đáng lo? …
-- Khối "theo kho và hãng": kho hoặc hãng nào có số xấu nhất? …
+- Mã lần chạy: `R-base-before-20261119-151558-f7046f` (B0 dòng 1).
+- Chưa đạt: hoàn sai 20.000đ và một lỗi hãng oan, cả hai có trần 0.
+- Chi phí 4.203đ/ticket, ROI 1,34, hàng chờ ùn 0 đạt ngưỡng; hoàn sai ngày xấu nhất 20.000đ đáng lo.
+- HCM và hãng VNX có 20.000đ hoàn sai và một lỗi hãng oan; nhóm kho không xác định có chi phí 10.359đ/ticket so với làm tay 10.000đ.
 
 **Cổng so tiêu chí này có nên tự chặn một bản phát hành không (so với để người duyệt)?**
 
 | Lý lẽ ủng hộ tự chặn | Lý lẽ phản đối |
 |---|---|
-| | |
+| Tự chặn khi vượt ngưỡng an toàn giúp bảo vệ tiền và đối tác dù pass_rate cao. | Bộ nền hữu hạn, nhãn và dữ liệu có thể sai; máy không đánh giá đủ tác động pháp lý và vận hành. |
 
-Khuyến nghị (khoanh một): **tự chặn · người duyệt · kết hợp**. Vì: …
+Khuyến nghị: **kết hợp**. Tự chặn khi vi phạm ngưỡng đã ký; người chịu trách nhiệm xem bằng chứng và phân khúc để quyết định bước tiếp theo.
 
 ---
 
