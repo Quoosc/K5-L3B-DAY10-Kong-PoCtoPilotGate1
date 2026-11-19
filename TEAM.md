@@ -96,20 +96,28 @@ Kỹ sư cổng — phụ trách code:
 ### Phần việc phụ trách
 
 Kỹ sư cổng — phụ trách đo và giám sát:
-- Vòng 1: Thiết kế offline metric 1.3; chạy base, gate, trace `T-002@55`; ghi B0–B2; phối hợp tạo hai ticket hiểm.
-- Vòng 2: Chạy grade trước sửa; dò ít nhất hai ticket khác kiểu; viết monitor mới; chạy lại sự cố và bộ nền; ghi C0, C2, C8.
+- Vòng 1: Thiết kế offline metric 1.3; chạy base, gate, trace `T-002@55`; ghi B0–B2, B7.2; phối hợp kiểm chứng hai ticket hiểm.
+- Vòng 2: Chạy grade trước sửa; dò ít nhất hai ticket khác kiểu; viết monitor mới trong `lab10/monitors.py`; chạy lại sự cố và bộ nền; ghi C0, C1, C2, C8.
 
 ### Đóng góp cụ thể
 
-...
+- **Vòng 1:** Chạy đánh giá baseline trên bộ nền (`lab10.eval`), so với bản tiêu chí đã ký (`lab10.gate`), và dò trace `T-002@55` (`lab10.trace`); điền phân tích kết quả baseline & khuyến nghị cổng kết hợp (B0–B1), bảng soát lỗi 3 phần cho `T-002@55` (B2) và 2 bước tránh rò rỉ dữ liệu gắn với bộ nền, gói sự cố, `--adhoc` và test ẩn (B7.2) trong `templates/form-b-evaluation-gates.md`.
+- **Vòng 2 (thẻ S5):** Ghi nhận `Thẻ đã bốc: S5`, chạy `lab10.grade --incident S5` trước khi sửa để lấy mốc `prepared`; dò 4 trace đại diện khác kiểu (`S5-51@11`, `S5-70@11`, `S5-20@11`, `S5-21@11 --stage after`) phát hiện rõ 3 nhánh lỗi (hoàn lặp & hoàn thiếu `S5-21`, kho sỉ `HCM-B2B` đắt hơn làm tay `10.382đ > 10.000đ`, email quá dài vượt trần LLM `1.500đ`); điền C0 (dòng 1–2), C1 (đối chiếu pre-mortem), C2 (3 lỗi khác nguồn có lỗi chìm) và C8 trong `templates/form-c-incident.md`.
+- **Giám sát (`lab10/monitors.py`):** Cài đặt 3 chỉ số theo dõi không dùng nhãn và đăng ký vào `MONITORS`: `max_warehouse_cost_per_ticket_vnd` (con số kinh doanh của S5 tách tiền máy + công người duyệt + tiền hoàn lặp theo kho), `llm_over_budget_rate` và `duplicate_order_attempt_rate`; cả 3 đều sáng đèn giữa `base` và `S5` (`6 monitor ✅`, `13/13` test công khai đạt).
+- **Kiểm chứng cuối:** Chạy kiểm chứng độc lập `lab10.grade --incident S5` trên bản hoàn thiện `a2d997c` xác nhận `PASS-VISIBLE` (`pass_rate = 1.0`, `pass_k = 1.0`, `3.980đ/ticket`, `ROI = 1.51`, `0` kho vượt trần, `0` lỗi regression).
+- **Ghi chú sử dụng AI:** Có dùng trợ lý AI để đọc mã nguồn (`agent.py`, `tools.py`, `ops.py`, `grade.py`), gợi ý cấu trúc các hàm monitor trong `lab10/monitors.py` và rà soát trình bày cho các mục B1–B2, B7.2, C1–C2, C8; toàn bộ lệnh đo, trace và con số đều tự chạy và đối chiếu trực tiếp.
 
 ### Bằng chứng
 
-...
+- Commit Vòng 1: `e2ebd3d` (`docs(eval): add baseline eval , T-002@55 error analysis`).
+- Commit Vòng 2: `28a5576` (`feat(monitor): add S5 monitors and complete C0-C2, C8 in Form C`).
+- Mã lần chạy thực tế: baseline `R-base-before-20261119-151708-78f364`; S5 mốc `prepared` trước sửa `R-S5-grade-20261119-162908-6eb764` (`R-S5-prepared-20261119-162909-6eb764`); S5 sau khi thêm 3 monitor `R-S5-grade-20261119-163328-e00950`; kiểm chứng độc lập bản cuối `R-S5-grade-20261119-170543-2119ff` (`PASS-VISIBLE`).
+- File đóng góp: `lab10/monitors.py`, `templates/form-b-evaluation-gates.md` (B0–B2, B7.2), `templates/form-c-incident.md` (C0–C2, C8), `TEAM.md`.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- **Một điều học được:** Với trợ lý AI có quyền ghi sổ, chỉ nhìn `pass_rate` tổng là chưa đủ — phải tách chi phí theo từng kho và từng dòng tiền (tiền máy, công người duyệt, tiền hoàn sai/thiếu) mới thấy được kho sỉ `HCM-B2B` đạt `pass_rate = 1.0` nhưng vẫn lỗ kép hơn làm tay (`10.382đ > 10.000đ`), và mới phát hiện cổng chặn hoàn lặp quá cứng đã làm hoàn thiếu `S5-21`.
+- **Một điều còn chưa chắc:** Khi chạy pilot thật không có nhãn, các chỉ số telemetry không nhãn chỉ phát hiện được hoàn lặp trong ngày chứ chưa tự bắt ngay được khoản hoàn sai lần đầu hay hoàn thiếu; cần đối chiếu thêm với dữ liệu kế toán cuối tuần và phản hồi khách hàng để hiệu chỉnh ngưỡng báo động cho Gate 2.
 
 ## NguyenQuangDung-2A202604031
 
