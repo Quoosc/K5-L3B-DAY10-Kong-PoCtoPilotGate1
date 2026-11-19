@@ -48,7 +48,7 @@ Trưởng nhóm · Sản phẩm và kinh doanh:
 - File khóa niêm phong: `config/acceptance_criteria.lock` (hash: `0f2b62d6a8fe7de0d19cb5c4c0f13c72aa8d2b90a38fafa048cfd19d67846ff9`).
 - File cấu hình: `config/acceptance_criteria.json`, `config/operating_gates.json` (mục `business`).
 - Tài liệu: `templates/form-a-criteria.md` (mục A1–A5), `templates/form-b-evaluation-gates.md` (mục B3, B7.4).
-- Báo cáo S5: `R-S5-grade-20261119-164717-5b399f`, mốc after `R-S5-after-20261119-164718-5b399f` (PASS-VISIBLE, chưa có test ẩn).
+- Báo cáo S5: `R-S5-grade-20261119-170612-a63d76`, mốc after `R-S5-after-20261119-170615-a63d76` (PASS-VISIBLE: 6/6 kiểm tra đạt).
 
 ### Exit ticket
 
@@ -86,7 +86,7 @@ Kỹ sư cổng — phụ trách code:
 - Commit triển khai: `cca0cfb` (`LAB 10: chốt cổng vòng 1 - phần kỹ thuật`); đồng bộ bằng chứng nhóm tại `d8568da`. Commit `984e794` đã ghi quyết định v1 **Tiếp tục** và PIC trong B8; `c75e16e` đã đồng bộ MSSV thành viên. Đây là đối chiếu lịch sử, không thay đổi quyết định v1.
 
 - Vòng 2: eval `R-S5-after-20261119-170612-a63d76`; grade `R-S5-grade-20261119-170612-a63d76`; mốc after `R-S5-after-20261119-170615-a63d76`. S5 90/90, base 110/110; hoàn sai/thiếu, lỗi hãng oan, PII và ca ùn bằng 0; S5 3980đ/ticket, ROI 1.51, độ phủ 60%. Test ẩn chưa có.
-- Kiểm tra bổ sung: `submission/runs/s5-engineering-checks.py` (6 tình huống × 5 seed); trace tại `submission/runs/s5-engineering-traces/`. C7 phân biệt thay đổi đã có của nhóm và nhánh retry bổ sung; không nhận toàn bộ bản sửa S5 là của riêng mình.
+- Bằng chứng lần sửa retry: script `submission/runs/s5-engineering-checks.py` khi đó có 6 tình huống × 5 seed; bản hiện tại được mở rộng lên 16 tình huống × 5 seed; trace tại `submission/runs/s5-engineering-traces/`. C7 phân biệt thay đổi đã có của nhóm và nhánh retry bổ sung; không nhận toàn bộ bản sửa S5 là của riêng mình.
 
 - Kiểm chứng bản cuối: eval `R-S5-after-20261119-172920-d299fd`, grade `R-S5-grade-20261119-172920-d299fd`, after `R-S5-after-20261119-172922-d299fd`. Script `s5-engineering-checks.py` hiện đạt 16/16 tình huống trên cả 5 seed (80/80 subcase); 13/13 test công khai. S5/base và chi phí/ROI không thay đổi. Trace sát ngưỡng tại `submission/runs/s5-engineering-traces/customer-daily-cap.json`.
 
@@ -94,14 +94,14 @@ Kỹ sư cổng — phụ trách code:
 
 - **Một điều học được từ kết quả kiểm chứng:** Cổng phải đối chiếu tracking/chính sách ngay trước thao tác ghi tiền; nếu đợi tới bước ghi lỗi hãng mới chuyển người thì tiền có thể đã ra khỏi sổ. Với `T-002@55`, chặn đề xuất không khớp DB giúp tiền hoàn sai và lỗi hãng oan từ 20000đ/1 về 0/0 mà không làm hỏng 109 lần chạy vốn đúng.
 - **Bổ sung từ S5:** Chống hoàn lặp cần xét phần còn thiếu thay vì từ chối mọi đơn đã có sổ. Ngoài chặn ghi hai lần, phải kiểm cả tin nhắn sau retry: số tiền phản hồi phải khớp khoản đã ghi của chính ticket, không cộng nhầm khoản hoàn thủ công trước đó.
-- **Một điều còn cần kiểm chứng:** Kết quả 110/110 trên bộ nền mock chưa bảo đảm tracking DB đúng ngoài đời, cũng chưa chứng minh cổng giữ được chi phí và SLA khi tải tăng hoặc chính sách đổi. Cần kiểm tiếp trên đúng thẻ được phát ở vòng 2 và đo lại trong pilot thật.
+- **Một điều còn cần kiểm chứng:** Kết quả 110/110 trên bộ nền mock chưa bảo đảm tracking DB đúng ngoài đời, cũng chưa chứng minh cổng giữ được chi phí và SLA khi tải tăng hoặc chính sách đổi. Đã kiểm bộ S5; còn cần kết quả test ẩn và đo lại bằng dữ liệu pilot thật.
 
 ### Trạng thái bàn giao
 
 - Vòng 1 của vai phụ trách code: đã viết cổng, liên kết rủi ro, thử ticket hiểm, kiểm regression, chốt snapshot và lưu bằng chứng. Bản vòng 1 được giữ nguyên; `guards.py` hiện có sửa vòng 2 và được đo riêng ở mốc after.
 - Danh tính Git riêng repo đã đổi theo README bước 2a: `user.name=2A202604113`, `user.email=2A202604113@example.com`; áp dụng cho commit tiếp theo. Không viết lại commit ký tiêu chí hoặc lịch sử đã push.
 - Nội dung mục cá nhân được tổng hợp với AI từ source và kết quả chạy thật; không ghi nhận một buổi demo hoặc trải nghiệm cá nhân chưa được cung cấp. Thành viên cần đọc và giải thích được ba cổng khi demo.
-- Vòng 2 S5: phần rà soát/sửa cổng, C7 và hỗ trợ C6/C9 đã hoàn tất theo report `R-S5-grade-20261119-170612-a63d76`. Quyết định v2 vẫn là Thu hẹp như trưởng nhóm đã ghi; xác nhận cả bàn, demo và nộp LMS là việc nhóm/thành viên thực hiện, không được suy ra từ PASS-VISIBLE.
+- Vòng 2 S5: phần rà soát/sửa cổng, C7 và hỗ trợ C6/C9 đã hoàn tất theo report cuối `R-S5-grade-20261119-172920-d299fd`. Quyết định v2 vẫn là Thu hẹp như trưởng nhóm đã ghi; xác nhận cả bàn, demo và nộp LMS là việc nhóm/thành viên thực hiện, không được suy ra từ PASS-VISIBLE.
 
 **Bàn giao bản bổ sung hạn mức:** cổng dùng cận trên an toàn do API không trả ngày cho từng dòng sổ; có thể chuyển duyệt sớm thay vì đo chính xác tổng của khách hôm nay. Cần API có dấu thời gian và giao dịch nguyên tử khi pilot thật. Bản báo cáo cuối là `R-S5-grade-20261119-172920-d299fd`.
 
@@ -145,12 +145,16 @@ Vận hành và pháp lý:
 
 - Soạn hai dòng HAZOP về quá tải người duyệt và dữ liệu cá nhân gửi sang hãng. Bổ sung góc nhìn vận hành và pháp lý vào pre-mortem.
 - Điền checklist 9 nhóm việc và soạn runbook phần 1–3, gồm ngưỡng cảnh báo, quyền dừng, bàn giao ticket, điều kiện bật lại và phương án trực giờ cao điểm. Phân công thực thi và mốc cảnh báo đề xuất còn chờ nhóm xác nhận.
+- Vòng 2 S5: bổ sung bản đồ dữ liệu chi phí, rà HAZOP và giả định đồng bộ sổ. Cập nhật risk register với điều kiện dừng hoàn và xử lý khi luồng tay quá tải. Đồng bộ checklist 9 nhóm với report cuối và cụ thể hóa Runbook 4–5, gồm người giữ ca, người đối soát, người dừng và người ký bật lại.
+- Đối chiếu metadata với bảng thành viên, quyết định v1/v2 và ba dòng C12, rồi gom và kiểm bài nộp. Dùng Codex để đọc bằng chứng, rà soát và cập nhật tài liệu S5, kiểm metadata và chạy lệnh gom bài.
 
 ### Bằng chứng
 
 - Phiếu B mục B4, B5, B6 và B7.5–B7.6.
 - Report `R-base-prepared-20261119-151853-52ef34` và `config/operating_gates.round1.json`.
+- Phiếu C mục C3.5, C4, C5.3.3, C10–C11 và báo cáo `R-S5-grade-20261119-170612-a63d76`. After ghi 0 ca ùn trên bộ thử và độ phủ 60%. `submission/submission.json` ghi quyết định v2 Thu hẹp.
 
 ### Exit ticket
 
-- Nháp để rà soát: Công suất duyệt trung bình có thể đủ trong bộ nền, nhưng một đợt dồn ca vẫn có thể làm trễ SLA. Cần kiểm khi nào người dự phòng có thể vào ca và chi phí có còn trong ngưỡng ở tải cao điểm hay không.
+- Điều rút ra từ bài: Chuyển tay giúp giữ an toàn khi sổ chưa đồng bộ, đồng thời làm tăng tải duyệt. Cần theo dõi riêng số ca cần duyệt và tuổi hàng chờ để gọi dự phòng trước khi chạm SLA 60 phút.
+- Điều còn cần kiểm: Độ trễ đồng bộ của khoản hoàn tay, công suất thực khi ca đến dồn và chi phí trực dự phòng. Cần xác nhận người dự phòng, quyền dừng và đầu mối thông báo trước pilot.
