@@ -111,12 +111,14 @@ Vận hành và pháp lý:
 
 ### Đóng góp cụ thể
 
-...
+- Soạn hai dòng HAZOP về quá tải người duyệt và dữ liệu cá nhân gửi sang hãng. Bổ sung góc nhìn vận hành và pháp lý vào pre-mortem.
+- Điền checklist 9 nhóm việc và soạn runbook phần 1–3, gồm ngưỡng cảnh báo, quyền dừng, bàn giao ticket, điều kiện bật lại và phương án trực giờ cao điểm. Phân công thực thi và mốc cảnh báo đề xuất còn chờ nhóm xác nhận.
 
 ### Bằng chứng
 
-...
+- Phiếu B mục B4, B5, B6 và B7.5–B7.6.
+- Report `R-base-prepared-20261119-151853-52ef34` và `config/operating_gates.round1.json`.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- Nháp để rà soát: Công suất duyệt trung bình có thể đủ trong bộ nền, nhưng một đợt dồn ca vẫn có thể làm trễ SLA. Cần kiểm khi nào người dự phòng có thể vào ca và chi phí có còn trong ngưỡng ở tải cao điểm hay không.

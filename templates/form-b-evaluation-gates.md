@@ -170,7 +170,7 @@ Với mỗi guideword: hậu quả cho ai, hiện có gì ngăn, cần thêm gat
 
 Tool chọn phân tích: `issue_refund`.
 
-Đóng góp kỹ thuật của Nguyễn Quốc Quang Anh, ghi sau baseline và trước sửa guard; chưa phải xác nhận thảo luận của cả nhóm. Hai dòng ngoài kỹ thuật bên dưới chờ vai Vận hành và pháp lý bổ sung.
+Đóng góp kỹ thuật của Nguyễn Quốc Quang Anh, ghi sau baseline và trước sửa guard. Các dòng ngoài kỹ thuật bên dưới là đề xuất để nhóm xác nhận.
 
 | Tham số / dòng dữ liệu | Guideword | Lệch cụ thể (viết bằng dữ kiện của lab) | Hậu quả, cho ai | Hiện có gì ngăn? | Gate đề xuất + tầng |
 |---|---|---|---|---|---|
@@ -193,8 +193,8 @@ Không bắt buộc điền đủ năm dòng. Bắt buộc: **ít nhất ba dòn
 
 | Thành phần | Guideword | Lệch cụ thể | Hậu quả, cho ai | Cổng đề xuất: code hay con số nào trong `config/operating_gates.json` |
 |---|---|---|---|---|
-| | | | | |
-| | | | | |
+| Hàng chờ duyệt | INCAPABLE | Nếu 14 ca đến cùng lúc và một người nhận ca đầu ngay, với 10 phút/ca thì ca cuối chờ 130 phút, vượt SLA 60 phút. | Khách chờ quá hạn, trưởng ca tồn hồ sơ. | Dùng `operations.max_queue_wait_minutes=60`; gọi dự phòng và thu hẹp phạm vi theo B7.6. |
+| Thông báo cho hãng | PERTURBED | Ghi chú tự do của đơn quà có thể chứa tên, số điện thoại và địa chỉ người nhận bị chép sang hãng. | Người nhận bị lộ dữ liệu, hãng nhận thông tin vượt nhu cầu xử lý. | G3 dựng lại thông báo từ danh sách trường được phép; `legal.pii_fields_blocked_to_third_party` chặn `name`, `phone`, `street`. Tắt `notify_carrier` nếu xác nhận bị lộ qua tuyến này. |
 
 **Ví dụ mẫu (`issue_refund`, đừng chép):** tham số `amount_vnd` · WRONG · số tiền tính từ số ngày khách tự khai · LogiX mất
 tiền, hãng bị kéo theo một lỗi · hiện chỉ có trần "không vượt tổng tiền đơn" · cổng ghi so với quyền lợi tính từ DB (chặn).
@@ -213,15 +213,15 @@ Trạng thái: **Xong** (có bằng chứng) · **Chưa** · **Không áp dụng
 
 | # | Nhóm việc | Bằng chứng lấy từ đâu (đã có sẵn trong lab) | Mục cần kiểm tra | Trạng thái | Bằng chứng | PIC |
 |---|---|---|---|---|---|---|
-| 1 | Chất lượng | Report `lab10.eval` (mã lần chạy) + bảng soát lỗi (Phiếu B mục B2) | | | | |
-| 2 | Dữ liệu | Bản đồ dữ liệu (Phiếu B mục B3, câu 2.3): trường nào là nguồn sự thật, trường nào là bản sao | | | | |
-| 3 | Bảo mật | Một vòng HAZOP với guideword PERTURBED (Phiếu B mục B4): chữ nào đi vào model mà không do LogiX viết | | | | |
-| 4 | Quyền hạn | `config/switches.json` + guard trước lệnh ghi; thẻ S2, S8 có thêm mục mức kiểm soát (Phiếu C mục C3) | | | | |
-| 5 | Hiệu năng, hạ tầng | Đội tự ước tính; HAZOP guideword INCAPABLE: LLM không trả lời thì sao; số người duyệt và số ca mỗi giờ | | | | |
-| 6 | Chi phí | Khối "kinh doanh và vận hành" của report: chi phí mỗi ticket so với làm tay, ROI, tiền LLM ticket đắt nhất; `config/operating_gates.json` mục `business` | | | | |
-| 7 | Vận hành | Runbook (Phiếu B mục B7.5–B7.6) + `config/operating_gates.json` mục `operations` (PIC, người duyệt, số người trực, điều kiện dừng, kênh báo tin) + metric trong `monitors.py` | | | | |
-| 8 | Con người, pháp lý | Bên thứ ba (hãng, tài xế, shop, người nhận quà, người đứng tên duyệt); `config/operating_gates.json` mục `legal`; thẻ S6, S7, S8 có mục riêng ở Phiếu C mục C3 | | | | |
-| 9 | Quyết định | Câu tiêu chí (Phiếu A mục A4) + hash Bản tiêu chí đã ký + quyết định Gate 1 (Phiếu B mục B8, Phiếu C mục C12) | | | | |
+| 1 | Chất lượng | B0, B2 và report prepared | Đối chiếu ngưỡng ký và lỗi chìm | Xong | R-base-prepared-20261119-151853-52ef34 đạt 110/110; B2 có trace T-002@55 | Trần Anh Dũng |
+| 2 | Dữ liệu | B3 và data/world.json | Kiểm nguồn sự thật và drift | Xong | B3 có bản đồ và ví dụ drift | Phạm Trấn Quốc |
+| 3 | Bảo mật | B4 PERTURBED, B7.1 | Soát chữ tự do từ ticket và đơn | Xong | B4 nêu nguồn; G1/G3 có biện pháp trước ghi/gửi | Nguyễn Quốc Quang Anh |
+| 4 | Quyền hạn | switches.json và B7.1 | Kiểm công tắc ghi và người duyệt NV-HANH | Xong | B7.1 ghi các cổng và mã chạy; có bốn công tắc | Nguyễn Quốc Quang Anh |
+| 5 | Hiệu năng, hạ tầng | B4, B7.6 và report prepared | Kiểm tải dồn và luồng chuyển khi LLM không phản hồi | Chưa | Bộ nền 0 ca ùn với 1 người, 6 ca/giờ; cần diễn tập timeout và cao điểm | Trần Anh Dũng |
+| 6 | Chi phí | Report prepared và B7.4 | Kiểm tổng chi phí, ROI, trần LLM | Xong | 4.456đ/ticket so với 10.000đ làm tay; ROI 1,24; LLM tối đa 770đ so với trần 1.500đ | Phạm Trấn Quốc |
+| 7 | Vận hành | B7.5–B7.6, operations và monitors.py | Xác nhận ca trực, dừng và bàn giao | Chưa | Có runbook dự thảo và escalation_rate; chờ xác nhận dự phòng và diễn tập dừng | Nguyễn Quang Dũng |
+| 8 | Con người, pháp lý | B4, B7.5, legal và report prepared | Soát dữ liệu gửi hãng, căn cứ ghi lỗi, đầu mối khiếu nại | Chưa | Prepared có 0 PII, 0 lỗi oan; chờ xác nhận đầu mối và diễn tập | Nguyễn Quang Dũng |
+| 9 | Quyết định | A4, B8 và acceptance_criteria.lock | So tiêu chí ký và chốt v1 | Chưa | Có commit ký 7448a88 và report prepared; chờ nhóm chốt và PIC ký | Phạm Trấn Quốc |
 
 Ô "Chưa" có rủi ro cao → chuyển thành một dòng Risk register (Phiếu C mục C10).
 
@@ -258,12 +258,12 @@ Bốn lăng kính (bắt buộc đủ cả bốn; dự án AI hay chết ở ba 
 |---|---|---|---|
 | Model đã dùng số ngày khách khai để giải ngân, hoặc chọn policy/approval không còn hợp lệ | Kỹ thuật | T-002@55; agent.py chọn index_active và cands[0]; approvals.expires_at/status | G1: ghim policy hiệu lực, kiểm quyền lợi, phê duyệt và ledger trước giải ngân |
 | | Kinh doanh | | |
-| | Con người và vận hành | | |
-| | Pháp lý | | |
+| Hàng duyệt đã vượt SLA khi ca trực chỉ có một người và yêu cầu dồn cùng lúc. | Con người và vận hành | B4, `ops_facts`, `queue_wait_max_min`, `queue_stuck` | Gọi dự phòng và thu hẹp ở B7.6; kiểm lại dưới tải dồn. |
+| Hãng đã phản đối lỗi bị ghi khi tracking thiếu căn cứ quy trách nhiệm. | Pháp lý | B2, tracking và `legal.carrier_fault_requires_recorded_cause` | G2 kiểm căn cứ trước khi ghi; thiếu căn cứ thì chuyển đối soát thủ công. |
 | Agent đã ghi lỗi vào kiện đầu tiên dù kiện chịu lỗi là kiện khác, hoặc nguyên nhân không thuộc lỗi hãng | Kỹ thuật | agent.py lấy parcels[0]; orders[].parcels; helper carrier_at_fault | G2: đối chiếu đúng kiện/hãng/tài xế/độ trễ, chỉ ghi khi có căn cứ |
 | Agent đã chép customer_note hoặc recipient_contact sang thông báo hãng | Pháp lý | agent.py dựng payload; policies[].carrier_notice_fields; đơn quà O-1026 có sẵn trong world | G3: dựng lại payload từ allowlist, không chuyển chữ tự do và liên hệ người nhận |
 
-Đây là phần đóng góp đề xuất của Kỹ sư cổng, không ghi nhận một buổi pre-mortem đã diễn ra. Các dòng Kinh doanh, Con người/vận hành và đóng góp của các thành viên khác còn chờ cả nhóm hoàn thành.
+Các dòng trên là đề xuất để cả nhóm rà soát. Dòng Kinh doanh và việc chọn 2–3 cổng ưu tiên còn chờ nhóm chốt.
 
 ---
 
@@ -335,53 +335,51 @@ nguyên nhân trong tracking). Rồi viết runbook dưới đây **khớp với
 
 *Runbook là tờ giấy người trực ca cầm lúc 23h khi có chuyện. Nó trả lời: nhìn con số nào, ngưỡng nào thì làm gì, ai được quyết.
 Phần 1–3 và mục Giờ cao điểm viết ở vòng 1. Phần 4–5 viết ở vòng 2 (Phiếu C mục C11). Mọi con số phải khớp `config/operating_gates.json` và report.*
-*Mỗi phần trả lời bốn câu hỏi: ai chịu trách nhiệm, nhìn gì, ngưỡng nào, làm gì.* **Người viết (vai Vận hành và pháp lý):** ______
+**Phụ trách:** Nguyễn Quang Dũng. Phân công thực thi, mốc vàng và thời hạn thao tác dưới đây là đề xuất để nhóm xác nhận.
 
 #### Runbook 1 · Ai chịu trách nhiệm
 
-| Vai | Tên / mã nhân viên (lấy từ `data/world.json` → `staff`) | Được quyền làm gì | Liên lạc qua kênh nào |
+| Vai | Tên / mã | Quyền và trách nhiệm | Kênh |
 |---|---|---|---|
-| PIC của trợ lý (một người) | | | |
-| Người duyệt đứng tên các khoản vượt hạn mức | | | |
-| Người giữ công tắc tắt từng thao tác ghi | | | |
-| Người nhận khiếu nại của bên thứ ba (hãng, shop, người nhận quà) | | | |
+| PIC | Phạm Trấn Quốc (operations.pic) | Điều phối, quyết phạm vi, ký bật lại | slack-cs-ops |
+| Người duyệt vượt hạn mức | Trần Thị Hạnh / NV-HANH | Nhận ca, duyệt ngoại lệ theo thẩm quyền, gọi dự phòng | slack-cs-ops |
+| Người giữ công tắc | Lê Thanh Tùng / NV-TUNG | Tắt thao tác và xác minh hiệu lực | slack-cs-ops |
+| Đầu mối khiếu nại | Phạm Kiều Oanh / NV-OANH | Nhận tranh chấp hãng/shop, chuyển chị Hạnh hỗ trợ người nhận quà, báo PIC nếu có PII | slack-cs-ops, dùng mã vụ việc |
 
-Số người trực duyệt mỗi ca: ___ · Mỗi giờ duyệt được: ___ ca · Phạm vi pilot: ______ (tất cả / kho nào / bao nhiêu phần trăm)
+Prepared có 1 người duyệt mỗi ca, công suất 6 ca/giờ, phạm vi 100%.
 
 #### Runbook 2 · Nhìn con số nào, ngưỡng nào thì làm gì
 
-Mỗi dòng một tín hiệu. Cột "Lấy ở đâu" phải là một dòng trong report của `lab10.eval` / `lab10.grade` hoặc một chỉ số trong `lab10/monitors.py`.
+Các trường report dùng để đối chiếu khi diễn tập. Trong pilot, theo dõi hàng chờ theo giờ nhận ca, đối soát hoàn tiền và ghi lỗi với sổ cái/tracking, và dùng telemetry A2 để phát hiện PII gửi sang hãng.
 
-| Tín hiệu | Lấy ở đâu | Bình thường | Ngưỡng VÀNG → việc làm | Ngưỡng ĐỎ → việc làm | Ai quyết |
+| Tín hiệu | Trường trong report | Bình thường | Vàng → hành động | Đỏ → hành động | Ai quyết |
 |---|---|---|---|---|---|
-| Thời gian chờ người duyệt lâu nhất | | | | | |
-| Số ca bị ùn | | | | | |
-| Chi phí mỗi ticket so với làm tay | | | | | |
-| Tổng tiền hoàn tự động trong ngày so với trần | | | | | |
-| Tiền hoàn sai | | | | | |
-| Lỗi ghi oan cho hãng / lộ dữ liệu cá nhân (pháp lý) | | | | | |
-| (tín hiệu riêng của bàn) | | | | | |
+| Chờ duyệt lâu nhất | queue_wait_max_min | Dưới 30 phút | Từ 30 đến dưới 60 phút → gọi dự phòng | Từ 60 phút → bàn giao ca sắp trễ và đánh giá thu hẹp | Hạnh điều phối, Quốc quyết phạm vi |
+| Số ca ùn | queue_stuck | 0 ca ùn | Hàng chờ thực tế có từ 4 ca chưa nhận → gọi dự phòng | Từ 1 ca ùn → bàn giao và thu hẹp nếu thiếu công suất | Hạnh điều phối, Quốc quyết phạm vi |
+| Chi phí mỗi ticket | cost_per_ticket_vnd, ops.cost.manual_cost_per_ticket_vnd | Dưới 4.500đ | 4.500–5.000đ → xem theo kho và tỉ lệ duyệt | Trên 5.000đ → đánh giá thu hẹp; đối chiếu chi phí làm tay 10.000đ | Quốc |
+| Hoàn tự động trong ngày | auto_refund_day_max_vnd, ops.refund.team_daily_cap_vnd | Dưới 1.600.000đ | Từ 1.600.000đ → báo PIC và đối soát | Chạm 2.000.000đ hoặc khoản tiếp theo sẽ vượt trần → tắt hoàn tự động | Tùng bấm, Quốc điều phối |
+| Tiền hoàn sai | wrongful_refund_vnd | 0đ | Có chênh lệch nghi vấn → giữ ca để đối soát | Xác nhận trên 0đ → tắt issue_refund, chuyển hoàn tay | Tùng bấm, Oanh đối soát |
+| Ghi lỗi oan và lộ PII | wrongful_carrier_faults, pii_leaks | Cả hai bằng 0 | Trên 2 khiếu nại lỗi hãng/ngày theo A2 → so tracking với sổ lỗi | Bất kỳ ca xác nhận nào → dừng thao tác liên quan, báo PIC | Tùng bấm, Oanh và Hạnh rà soát |
+| Tỉ lệ chuyển người | monitors.escalation_rate | Dưới 20% | 20–25% → kiểm công suất ca | Trên 25% → rà soát nguyên nhân và phạm vi | Hạnh báo Quốc |
 
 #### Runbook 3 · Điều kiện dừng và cách dừng
 
-- Dừng một phần (tắt một thao tác ghi, thu hẹp phạm vi) khi: …
-- Dừng hẳn khi: …
-- Cách dừng, từng bước (công tắc nào trong `config/switches.json`, dòng nào trong `config/operating_gates.json`): …
-- Từ tín hiệu đỏ đến lúc dừng xong tối đa ____ phút; người bấm: ____
-- Khi đã dừng, ticket đang chờ đi đâu, ai xử lý: …
-- Điều kiện để bật lại, ai ký: …
+- Dừng một phần khi khoanh được thao tác hoặc phạm vi gây hại. Tắt issue_refund khi hoàn sai hoặc chạm trần. Tắt file_carrier_fault và notify_carrier khi ghi lỗi oan. Tắt tuyến gửi liên quan khi xác nhận lộ PII.
+- Dừng hẳn khi tác hại lan qua nhiều thao tác, chưa khoanh được nguồn, hoặc sau một vòng cải tiến vẫn còn hoàn sai hay ghi oan theo tiêu chí đã ký.
+- Báo slack-cs-ops bằng mã vụ việc và giờ phát hiện. Anh Tùng đặt thao tác liên quan về "off" trong config/switches.json. Nếu dừng hẳn, tắt cả issue_refund, file_carrier_fault, notify_carrier, send_reply và ngừng đưa ticket vào pilot. Nếu thu hẹp, PIC chỉnh business.pilot_scope của cấu hình đang chạy. Anh Tùng xác minh thao tác đã ngừng phát sinh lượt ghi mới.
+- Mục tiêu đề xuất là tối đa **5 phút** từ tín hiệu đỏ cần dừng đến khi xác nhận dừng xong. **Lê Thanh Tùng** bấm và báo lại giờ dừng.
+- Chị Hạnh bàn giao ticket theo tuổi hàng chờ cho luồng thủ công. Chị Oanh đối chiếu thao tác đã ghi để tránh hoàn hoặc ghi lỗi lần hai.
+- Bật lại sau khi xử lý nguyên nhân, chạy lại ca lỗi và bộ nền đạt tiêu chí, đối soát tác động và xác nhận đủ người trực. Phạm Trấn Quốc ký sau xác nhận của Hạnh, Tùng và Oanh.
 
 ### B7.6 · Giờ cao điểm (bắt buộc với thẻ S4; các thẻ khác nên có)
 
-Lượng ticket có thể dồn gấp ba trong một giờ (ngày sale, sau bão). Viết trước, khi chưa biết sự cố.
-
-| Câu hỏi | Trả lời (có số, có tên) |
+| Câu hỏi | Trả lời |
 |---|---|
-| Giờ cao điểm là khi nào, bao nhiêu ticket mỗi giờ (dựa vào `ops_facts`)? | |
-| Ai trực giờ cao điểm, mấy người (khớp `operations.reviewers_on_shift`)? | |
-| Ngưỡng nào thì **gọi thêm người** (hàng chờ bao nhiêu ca, chờ lâu nhất bao nhiêu phút)? Ai gọi? | |
-| Ngưỡng nào thì **thu hẹp** phạm vi (khoá `business.pilot_scope`) hoặc **tắt** một thao tác ghi (`config/switches.json`)? Ai quyết? | |
-| Thêm người thì chi phí mỗi ticket và ROI thay đổi thế nào (đọc report)? | |
+| Giờ cao điểm và tải | Giả lập ngày sale hoặc sau bão. Prepared có 22 ticket quy đổi cho ca 8 giờ theo ops_facts, trung bình 2,75 ticket/giờ. Kịch bản gấp ba tương đương khoảng 8–9 ticket/giờ. Theo dõi riêng số ca cần duyệt. |
+| Ai trực | Chị Hạnh duyệt 6 ca/giờ, anh Tùng giữ công tắc. Chị Hạnh xác nhận người dự phòng đủ quyền trước ca. |
+| Khi nào gọi thêm | Chị Hạnh gọi khi có từ 4 ca chưa nhận hoặc ca lâu nhất chờ từ 30 phút. Khi bổ sung người đủ quyền, cập nhật số người trực và công suất tổng của cấu hình đang chạy. |
+| Khi nào thu hẹp hoặc tắt | Khi dự báo vượt 60 phút dù đã gọi dự phòng hoặc đã có ca ùn, anh Quốc quyết giảm còn 50% hay chọn kho đã kiểm đạt. Phần ngoài pilot chuyển thủ công. Hoàn sai, lỗi oan hoặc lộ PII thực hiện theo runbook 3. |
+| Chi phí và ROI khi thêm người | Prepared: 4.456đ/ticket, ROI 1,24. Thêm một người cả ca tốn 30.000đ. Giữ 22 ticket và các khoản khác như report, ước tính 5.820đ/ticket, ROI 0,72. Chi phí vượt ngưỡng ký 5.000đ; cần kiểm lại với tải cao điểm. |
 
 ---
 
@@ -410,7 +408,7 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 | Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | ca556bb9; chốt 2026-11-19T15:18:53, chưa có thẻ sự cố |
 | Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: R-base-before-20261119-151617-870b37 · bộ nền với cổng vòng 1 (prepared): R-base-prepared-20261119-151853-52ef34 |
 | Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Không trên bộ nền prepared; mọi required/nice_to_have/business_ops đã ký đều đạt |
-| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | |
+| Kho hoặc hãng có số xấu nhất và tác động đến quyết định | Prepared: nhóm kho chưa xác định có 5 lượt thử với 10.359đ/ticket, hơn 10.000đ làm tay. DN cao nhất trong các kho đã xác định, 4.646đ/ticket. Tất cả hãng đạt 100% và ba chỉ số an toàn bằng 0. Nếu chỉ xét nhóm kho chưa xác định, đề xuất xử lý tay phân khúc này trong lúc rà lại dữ liệu. Quyết định v1 cấp pilot chờ nhóm chốt. |
 | Quyết định (khoanh một) | Tiếp tục · Thu hẹp · Cải tiến thêm · Dừng |
 | Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | R-base-prepared-20261119-151853-52ef34: pass_rate=1.0 [1.0; 1.0], pass_k=1.0, 110/110 đạt |
 | Bằng chứng 2 | R-base-prepared-20261119-151853-52ef34: hoàn sai=0đ, lỗi hãng oan=0, PII=0; không có ca mới hỏng so với R-base-before-20261119-151617-870b37 |
@@ -419,7 +417,7 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 | Nếu Thu hẹp: cắt phần nào, vì sao | |
 | Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | |
 | Nếu Dừng: bài học ghi lại | |
-| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Chưa có thẻ/test ẩn và dữ liệu pilot thật. B4 ngoài kỹ thuật, B5, B6 các lăng kính còn lại, runbook B7.5–B7.6 và quyết định/PIC v1 cần nhóm hoàn tất; số nền không thay thế các mục này |
+| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Chưa có số đo tải cao điểm và diễn tập dừng/chuyển ca. Kết quả thẻ sự cố và dữ liệu pilot thật cũng chưa có. |
 | Ngày quyết định lại (trừ khi Dừng) | |
 | PIC ký | |
 
