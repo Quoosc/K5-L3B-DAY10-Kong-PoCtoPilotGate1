@@ -421,7 +421,7 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 | Ngày quyết định lại (trừ khi Dừng) | 2026-11-26 (họp đánh giá lại sau 1 tuần pilot). |
 | PIC ký | Phạm Trấn Quốc (Trưởng nhóm · Sản phẩm và kinh doanh) |
 
-Phần Kỹ sư cổng đã chốt snapshot và cung cấp bằng chứng; quyết định v1/PIC chưa được cả nhóm chốt. Không suy ra quyết định từ dòng lệnh thành công. Snapshot giữ nguyên; nếu cần thay config sau mốc này, sửa file hiện tại và phân biệt rõ với prepared.
+Ghi chú đồng bộ hồ sơ: phần Kỹ sư cổng đã chốt snapshot và cung cấp bằng chứng. Commit `984e794` đã ghi quyết định v1 **Tiếp tục** và PIC Phạm Trấn Quốc ở bảng trên; ghi chú “chờ chốt” lúc bàn giao kỹ thuật không còn là trạng thái hiện tại. Lần cập nhật này không thay đổi quyết định, ngưỡng hay con số v1. Snapshot giữ nguyên; vòng 2 chỉ sửa các file hiện tại và phân biệt rõ với prepared.
 
 Xong v1 thì lưu và đẩy một bản (sau mốc này không sửa cột v1):
 

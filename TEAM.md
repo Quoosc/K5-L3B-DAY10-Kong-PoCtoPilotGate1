@@ -75,11 +75,19 @@ Kỹ sư cổng — phụ trách code:
 - Prepared đạt 110/110, pass_rate/pass_k=1.0; tiền hoàn sai/lỗi hãng oan/PII=0; chi phí 4456đ/ticket; ROI 1.24; không ùn hàng chờ.
 - Snapshot: `lab10/guards_round1.py`, `config/operating_gates.round1.json`, `config/round1.lock`; hash `ca556bb9`.
 - Phiếu B: B0, phần kỹ thuật B4/B6, B7.1–B7.3 và các dòng bằng chứng B8. Report/journal và trace tự viết được lưu thêm ở `submission/runs/` để không mất do `/runs/` bị gitignore.
-- Commit triển khai mang tiêu đề `LAB 10: chốt cổng vòng 1 - phần kỹ thuật`; tra mã bằng `git log --oneline -- lab10/guards_round1.py`. Quyết định v1 và các mục chung còn chờ nhóm hoàn tất.
+- Commit triển khai: `cca0cfb` (`LAB 10: chốt cổng vòng 1 - phần kỹ thuật`); đồng bộ bằng chứng nhóm tại `d8568da`. Commit `984e794` đã ghi quyết định v1 **Tiếp tục** và PIC trong B8; `c75e16e` đã đồng bộ MSSV thành viên. Đây là đối chiếu lịch sử, không thay đổi quyết định v1.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc: thành viên tự điền sau khi đọc code và thực hành demo; không dùng AI viết thay trải nghiệm cá nhân.
+- **Một điều học được từ kết quả kiểm chứng:** Cổng phải đối chiếu tracking/chính sách ngay trước thao tác ghi tiền; nếu đợi tới bước ghi lỗi hãng mới chuyển người thì tiền có thể đã ra khỏi sổ. Với `T-002@55`, chặn đề xuất không khớp DB giúp tiền hoàn sai và lỗi hãng oan từ 20000đ/1 về 0/0 mà không làm hỏng 109 lần chạy vốn đúng.
+- **Một điều còn cần kiểm chứng:** Kết quả 110/110 trên bộ nền mock chưa bảo đảm tracking DB đúng ngoài đời, cũng chưa chứng minh cổng giữ được chi phí và SLA khi tải tăng hoặc chính sách đổi. Cần kiểm tiếp trên đúng thẻ được phát ở vòng 2 và đo lại trong pilot thật.
+
+### Trạng thái bàn giao
+
+- Vòng 1 của vai phụ trách code: đã viết cổng, liên kết rủi ro, thử ticket hiểm, kiểm regression, chốt snapshot và lưu bằng chứng. Bản hiện tại của `guards.py` vẫn trùng byte với `guards_round1.py`.
+- Danh tính Git riêng repo đã đổi theo README bước 2a: `user.name=2A202604113`, `user.email=2A202604113@example.com`; áp dụng cho commit tiếp theo. Không viết lại commit ký tiêu chí hoặc lịch sử đã push.
+- Nội dung mục cá nhân được tổng hợp với AI từ source và kết quả chạy thật; không ghi nhận một buổi demo hoặc trải nghiệm cá nhân chưa được cung cấp. Thành viên cần đọc và giải thích được ba cổng khi demo.
+- Vòng 2 chưa thực hiện: repo chưa có số thẻ/gói sự cố. Khi nhận thẻ, phối hợp chạy grade trước sửa; sau đó mới sửa `guards.py`, ghi C7 và hỗ trợ fault tree C6/C9. Không sửa ba file snapshot hoặc tiêu chí đã ký.
 
 ## TranAnhDung-2A202604037
 
