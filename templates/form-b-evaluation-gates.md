@@ -409,17 +409,17 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 | Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: R-base-before-20261119-151617-870b37 · bộ nền với cổng vòng 1 (prepared): R-base-prepared-20261119-151853-52ef34 |
 | Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Không trên bộ nền prepared; mọi required/nice_to_have/business_ops đã ký đều đạt |
 | Kho hoặc hãng có số xấu nhất và tác động đến quyết định | Prepared: nhóm kho chưa xác định có 5 lượt thử với 10.359đ/ticket, hơn 10.000đ làm tay. DN cao nhất trong các kho đã xác định, 4.646đ/ticket. Tất cả hãng đạt 100% và ba chỉ số an toàn bằng 0. Nếu chỉ xét nhóm kho chưa xác định, đề xuất xử lý tay phân khúc này trong lúc rà lại dữ liệu. Quyết định v1 cấp pilot chờ nhóm chốt. |
-| Quyết định (khoanh một) | Tiếp tục · Thu hẹp · Cải tiến thêm · Dừng |
+| Quyết định (khoanh một) | **Tiếp tục** |
 | Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | R-base-prepared-20261119-151853-52ef34: pass_rate=1.0 [1.0; 1.0], pass_k=1.0, 110/110 đạt |
 | Bằng chứng 2 | R-base-prepared-20261119-151853-52ef34: hoàn sai=0đ, lỗi hãng oan=0, PII=0; không có ca mới hỏng so với R-base-before-20261119-151617-870b37 |
 | Bằng chứng 3 | R-base-prepared-20261119-151853-52ef34: 4456đ/ticket ≤ 5000đ, ROI=1.24 ≥ 0.2; queue_stuck=0; escalation_rate=0.2273 ≤ 0.25 |
-| Khớp dòng nào trong `decision_rule` đã ký? | |
-| Nếu Thu hẹp: cắt phần nào, vì sao | |
-| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | |
-| Nếu Dừng: bài học ghi lại | |
+| Khớp dòng nào trong `decision_rule` đã ký? | Khớp dòng "Tiếp tục" trong Bản tiêu chí: Mọi chỉ số bắt buộc đạt trên bộ nền (pass_rate 1.0 >= 0.85, pass_k 1.0 >= 0.8, hoàn sai 0đ, lỗi hãng oan 0, PII 0), không vượt trần ngân sách ngày (2.000.000đ) và số ca bị ùn queue_stuck = 0. |
+| Nếu Thu hẹp: cắt phần nào, vì sao | Không áp dụng (mốc prepared đạt toàn diện mọi chỉ số). |
+| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | Không áp dụng. |
+| Nếu Dừng: bài học ghi lại | Không áp dụng. |
 | Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Chưa có số đo tải cao điểm và diễn tập dừng/chuyển ca. Kết quả thẻ sự cố và dữ liệu pilot thật cũng chưa có. |
-| Ngày quyết định lại (trừ khi Dừng) | |
-| PIC ký | |
+| Ngày quyết định lại (trừ khi Dừng) | 2026-11-26 (họp đánh giá lại sau 1 tuần pilot). |
+| PIC ký | Phạm Trấn Quốc (Trưởng nhóm · Sản phẩm và kinh doanh) |
 
 Phần Kỹ sư cổng đã chốt snapshot và cung cấp bằng chứng; quyết định v1/PIC chưa được cả nhóm chốt. Không suy ra quyết định từ dòng lệnh thành công. Snapshot giữ nguyên; nếu cần thay config sau mốc này, sửa file hiện tại và phân biệt rõ với prepared.
 
