@@ -2,9 +2,9 @@
 
 ## Thông tin nhóm
 
-- Tên nhóm (`TenNhom`, không dấu, không khoảng trắng):
-- Lớp: `L3A` / `L3B`
-- Repo của bàn: `K5-<L3A|L3B>-DAY10-<TenNhom>-PoCtoPilotGate1`
+- Tên nhóm (`TenNhom`, không dấu, không khoảng trắng): Kong
+- Lớp: `L3B`
+- Repo của bàn: `K5-L3B-DAY10-Kong-PoCtoPilotGate1`
 - Thẻ sự cố đã bốc (S1–S8):
 
 ## Thành viên
@@ -13,10 +13,10 @@ Họ tên đầy đủ và MSSV của **mọi** thành viên; bàn 3 người th
 
 | STT | Họ và tên | MSSV | Vai | Trưởng nhóm |
 | --: | --------- | ---- | --- | :---------: |
-|   1 |           |      |     |             |
-|   2 |           |      |     |             |
-|   3 |           |      |     |             |
-|   4 |           |      |     |             |
+|   1 | Phạm Trấn Quốc | 2A202604113 | Kỹ sư cổng | Có |
+|   2 | Nguyễn Quốc Quang Anh | 2A202604120 | Kỹ sư cổng | |
+|   3 | Trần Anh Dũng | 2A202604037 | Sản phẩm và kinh doanh | |
+|   4 | Nguyễn Quang Dũng | 2A202604037 | Vận hành và pháp lý | |
 
 Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, khớp bảng trên.
 
@@ -24,11 +24,11 @@ Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, k
 
 Mỗi thành viên tự viết một mục bên dưới (chép mẫu, đổi tiêu đề thành họ tên không dấu và MSSV, ví dụ `## NguyenVanAn-20241234`).
 
-## HoVaTen-MSSV
+## PhamTranQuoc-2A202604113
 
 ### Phần việc phụ trách
 
-Vai trong bàn; câu nào của đề, mục nào của phiếu A/B/C, file nào (`lab10/guards.py`, `config/operating_gates.json`, …).
+Trưởng nhóm · Kỹ sư cổng.
 
 ### Đóng góp cụ thể
 
@@ -36,7 +36,61 @@ Vai trong bàn; câu nào của đề, mục nào của phiếu A/B/C, file nào
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+...
+
+### Exit ticket
+
+Một điều học được, một điều còn chưa chắc.
+
+## NguyenQuocQuangAnh-2A202604120
+
+### Phần việc phụ trách
+
+Kỹ sư cổng.
+
+### Đóng góp cụ thể
+
+...
+
+### Bằng chứng
+
+...
+
+### Exit ticket
+
+Một điều học được, một điều còn chưa chắc.
+
+## TranAnhDung-2A202604037
+
+### Phần việc phụ trách
+
+Sản phẩm và kinh doanh.
+
+### Đóng góp cụ thể
+
+...
+
+### Bằng chứng
+
+...
+
+### Exit ticket
+
+Một điều học được, một điều còn chưa chắc.
+
+## NguyenQuangDung-2A202604037
+
+### Phần việc phụ trách
+
+Vận hành và pháp lý.
+
+### Đóng góp cụ thể
+
+...
+
+### Bằng chứng
+
+...
 
 ### Exit ticket
 
