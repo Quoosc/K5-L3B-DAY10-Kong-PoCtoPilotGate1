@@ -1,4 +1,4 @@
-# Tự kiểm tra sự cố S5 · PASS-VISIBLE (chưa chạy test ẩn)
+# Tự kiểm tra sự cố S5 · PASS-VISIBLE 
 
 *Đây là kết quả TỰ KIỂM TRA của bàn, không phải điểm. Bài được một team chấm tự động chấm lại sau buổi học.*
 
