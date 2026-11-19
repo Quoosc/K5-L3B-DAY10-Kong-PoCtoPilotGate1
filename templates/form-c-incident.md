@@ -32,8 +32,8 @@ Mỗi lệnh `lab10.eval` và `lab10.grade` tự ghi một dòng vào `runs/jour
 |---|---|---|---|---|---|---|---|---|
 | 1 | R-S5-prepared-20261119-163558-35fc09 | S5 · prepared | snapshot vòng 1 | 0,9667 [0,9; 1] | 0,9667 | 0 · 0 · 0 | 0,5 | S5-21 hoàn thiếu. |
 | 2 | R-S5-after-20261119-163605-4408a8 | S5 · after | thu hẹp phạm vi | 0,9444 [0,8333; 1] | 0,9444 | 0 · 0 · 0 | 0,1667 | Giảm chi phí; S5-21 còn thiếu. |
-| 3 | R-S5-after-20261119-164319-a4ba0f | S5 · after | sửa hoàn phần còn thiếu và thêm monitor | 1 [1; 1] | 1 | 0 · 0 · 0 | 0,1667 | Visible đạt; kiểm thử ẩn chưa có. |
-| 4 | R-S5-grade-20261119-164317-a4ba0f | base · after | grade kiểm regression | 1 [1; 1] | 1 | 0 · 0 · 0 | 0,2273 | Không có ca nền mới hỏng. |
+| 3 | R-S5-after-20261119-164718-5b399f | S5 · after | sửa hoàn phần còn thiếu và thêm monitor | 1 [1; 1] | 1 | 0 · 0 · 0 | 0,1667 | Visible đạt; kiểm thử ẩn chưa có. |
+| 4 | R-S5-grade-20261119-164717-5b399f | base · after | grade kiểm regression | 1 [1; 1] | 1 | 0 · 0 · 0 | 0,2273 | Không có ca nền mới hỏng. |
 
 ---
 
@@ -110,8 +110,8 @@ người chịu hại thường là bên thứ ba). Định nghĩa đầy đủ 
 | | Lỗi 1 | Lỗi 2 | Lỗi 3 |
 |---|---|---|---|
 | Vì sao người gặp coi đây là lỗi | Kế toán (chị Oanh) và CFO thấy cùng 1 đơn bị chi hoàn 2–3 lần (thất thoát tiền thật) hoặc khách `S5-21` bị từ chối phần `12.000đ` còn lại dù mới được hoàn `10.000đ/22.000đ`. | CFO thấy trợ lý không giảm được công người ở kho sỉ `HCM-B2B` mà còn cộng thêm phí máy, khiến mỗi ticket đắt hơn làm tay (`10.382đ > 10.000đ`). | CFO thấy chi phí LLM vượt trần cam kết `1.500đ/ticket` (lên tới `2.412đ`) cho một đơn hoàn phí ship chỉ `18.000đ`. |
-| Kiểu giải pháp: phản hồi cho người dùng / trao quyền kiểm soát cho người / khác | **Chặn & điều chỉnh cấp hệ thống theo nguồn sự thật `ledger`:** Trong `write_gate` (`issue_refund`), tính `already_paid = sum(r["amount_vnd"] for r in ledger_rows(order_id=...))` và `remaining = expected - already_paid`; nếu `remaining <= 0` thì `deny` (chặn hoàn trùng), nếu `0 < remaining < expected` thì `modify(amount_vnd=remaining)` (hoàn đúng phần còn thiếu như `S5-21`). | **Thu hẹp phạm vi kinh doanh (config):** Đặt `business.pilot_scope` trong `config/operating_gates.json` thành `"mode": "warehouse", "warehouses": ["HN", "HCM", "DN", "CT"]` để loại kho sỉ `HCM-B2B` ra khỏi trợ lý, đưa thẳng về quy trình làm tay. | **Kết hợp cổng tiền xử lý + ngân sách config:** Giữ `business.cost_budget_per_ticket_vnd = 1500` làm trần bảo vệ cứng, đồng thời thêm bước `pre_guard` (`Verdict.rewrite`) rút gọn phần văn bản/bảng kê đính kèm quá dài trước khi gọi LLM để các đơn lẻ hợp lệ (`S5-70`, `S5-73`, `S5-76`) vẫn tự động hoá được với chi phí thấp. |
-| Đường đi của người sau khi có giải pháp (ví dụ: ticket chuyển sang người duyệt → duyệt → khách được trả lời) | Đơn đã hoàn đủ (`S5-20`, `S5-02`) → bị chặn ghi sổ, báo khách đã hoàn trước đó; đơn mới hoàn 1 phần (`S5-21`) → tự động hoàn nốt `12.000đ` đúng quyền lợi, khớp sổ cái chị Oanh. | Ticket kho `HCM-B2B` đi thẳng tới nhân viên CSKH làm tay (`10.000đ/ticket`, không tốn tiền máy); 4 kho lẻ còn lại chạy trợ lý với chi phí thấp và ROI cao. | Email dài hợp lệ được rút gọn trước khi gọi LLM (tốn < `800đ`) → tự động hoàn phí mà không đẩy sang hàng chờ người duyệt; nếu vẫn vượt `1.500đ` thì cổng ngân sách chặn và chuyển người. |
+| Kiểu giải pháp: phản hồi cho người dùng / trao quyền kiểm soát cho người / khác | **Chặn và điều chỉnh theo ledger:** tính quyền lợi trừ tổng đã hoàn; hoàn phần còn thiếu, chặn khi đã đủ. | **Thu hẹp phạm vi:** `business.pilot_scope` giữ HN, HCM, DN, CT; HCM-B2B làm tay. | **Cổng ngân sách:** giữ trần 1.500đ; chuyển người khi dự toán vượt trần. Rút gọn nội dung là phương án chưa triển khai. |
+| Đường đi của người sau khi có giải pháp (ví dụ: ticket chuyển sang người duyệt → duyệt → khách được trả lời) | S5-20 bị chặn ghi trùng, trả lời đã có khoản hoàn và hướng dẫn đối soát; S5-21 hoàn nốt 12.000đ. | HCM-B2B chuyển làm tay; các kho còn lại theo phạm vi đã đặt. | S5-70@11 after: dự toán cuộc gọi 1.518đ cộng 200đ đã chi vượt trần 1.500đ, chuyển người trước gọi; chi phí mock 200đ. |
 | Hệ thống học được gì (tín hiệu ghi lại để theo dõi: tên metric trong `monitors.py`) | Theo dõi `duplicate_order_attempt_rate` (tỉ lệ ticket lặp `order_id` trong ngày hoặc bị chặn hoàn lặp) và tách dòng tiền mất trong `max_warehouse_cost_per_ticket_vnd`. | Theo dõi `max_warehouse_cost_per_ticket_vnd` (chi phí/ticket của kho đắt nhất, báo động ĐỎ khi > `10.000đ` làm tay). | Theo dõi `llm_over_budget_rate` (tỉ lệ ticket vượt trần LLM `1.500đ`, chạm `business_gate` hoặc văn bản > `3.000` ký tự). |
 
 Yêu cầu: ít nhất **hai lỗi có nguồn khác nhau** ở phần 2, và ít nhất một lỗi được xếp đúng là **lỗi chìm**.
@@ -327,7 +327,7 @@ vì cổng ghi không đọc ticket; còn hở nếu chính tracking DB sai.
 
 | Nhánh | Thay đổi | Tầng và giới hạn | Bằng chứng after |
 |---|---|---|---|
-| 1 | `write_gate` cộng ledger, chỉ hoàn chênh lệch còn thiếu | Chặn vượt quyền lợi trên sổ đầy đủ; giảm rủi ro nếu sổ trễ | S5-21@11 hoàn 12.000đ; `R-S5-after-20261119-164319-a4ba0f` |
+| 1 | `write_gate` cộng ledger, chỉ hoàn chênh lệch còn thiếu | Chặn vượt quyền lợi trên sổ đầy đủ; giảm rủi ro nếu sổ trễ | S5-21@11 hoàn 12.000đ; `R-S5-after-20261119-164718-5b399f` |
 | 2 | `business.pilot_scope` loại HCM-B2B | Vận hành: loại chi phí kép trong phạm vi mock; ticket chuyển làm tay | cùng report: độ phủ 60%, 3.980đ/ticket |
 | 3 | Trần LLM 1.500đ đã đặt từ vòng 1 | Giới hạn chi phí, phụ thuộc cơ chế dự toán | cùng report: tối đa 765đ; prepared 764đ |
 
@@ -341,9 +341,9 @@ python3 -m lab10.grade --incident Sx
 
 | Nhánh fault tree | Nguyên nhân | Chỗ sửa (hàm + nhánh trong `guards.py`, hoặc khoá trong `operating_gates.json`) | Tầng (phát hiện / chặn / giới hạn thiệt hại / vận hành) | GIẢM khả năng hay NGĂN hẳn? Vì sao | Mã lần chạy sau khi sửa |
 |---|---|---|---|---|---|
-| [1] | Gate từ chối mọi khoản khi sổ đã có dòng | `write_gate`: tính entitlement trừ tổng ledger, sửa số tiền | Chặn / điều chỉnh | Ngăn hoàn vượt quyền lợi khi sổ đầy đủ; sổ trễ vẫn có rủi ro | R-S5-after-20261119-164319-a4ba0f |
-| [2] | Kho sỉ tốn máy rồi chuyển người | `business.pilot_scope`: loại HCM-B2B | Vận hành | Giảm chi phí trợ lý tại kho bị loại; vẫn phải tính công làm tay | R-S5-after-20261119-164319-a4ba0f |
-| [3] | Ticket dài làm tăng tiền LLM | `cost_budget_per_ticket_vnd` 1.500đ | Giới hạn thiệt hại | Giảm nguy cơ vượt trần theo mô phỏng; chi phí thực cần đo | R-S5-after-20261119-164319-a4ba0f |
+| [1] | Gate từ chối mọi khoản khi sổ đã có dòng | `write_gate`: tính entitlement trừ tổng ledger, sửa số tiền | Chặn / điều chỉnh | Ngăn hoàn vượt quyền lợi khi sổ đầy đủ; sổ trễ vẫn có rủi ro | R-S5-after-20261119-164718-5b399f |
+| [2] | Kho sỉ tốn máy rồi chuyển người | `business.pilot_scope`: loại HCM-B2B | Vận hành | Giảm chi phí trợ lý tại kho bị loại; vẫn phải tính công làm tay | R-S5-after-20261119-164718-5b399f |
+| [3] | Ticket dài làm tăng tiền LLM | `cost_budget_per_ticket_vnd` 1.500đ | Giới hạn thiệt hại | Giảm nguy cơ vượt trần theo mô phỏng; chi phí thực cần đo | R-S5-after-20261119-164718-5b399f |
 
 ---
 
@@ -365,15 +365,15 @@ Thẻ S5 dùng mục này cho một con số kinh doanh: chi phí mỗi ticket t
 | **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | Mỗi kho lấy tổng (chi phí máy + 10.000đ × đơn vị duyệt) chia số trial, rồi lấy giá trị lớn nhất; loại trial thiếu mã kho khỏi phân nhóm. Chuyển người = 1 đơn vị, kiểm mẫu = 0,4. |
 | **Khung thời gian / ngưỡng báo động** | Theo ngày/ca trong thực tế; vàng trên 5.000đ, đỏ trên 10.000đ/ticket. |
 | **Điểm mù** (chỉ số này KHÔNG thấy gì) | Chưa gồm chi phí trực cố định, tiền mất do hoàn sai và kho thiếu mã; cần đối soát riêng. Số liệu trial là giả lập, giả định chi phí duyệt và hệ số như trên. |
-| Giá trị trên bộ nền · trên thẻ (đọc mục `monitor` của report) | Trước: 4.586,4 · 11.325,67đ; after: 4.646,4 · 4.276,75đ; report `R-S5-grade-20261119-164317-a4ba0f`. |
+| Giá trị trên bộ nền · trên thẻ (đọc mục `monitor` của report) | Trước: 4.586,4 · 11.325,67đ; after: 4.646,4 · 4.276,75đ; report `R-S5-grade-20261119-164717-5b399f`. |
 
 ---
 
 <a id="c9"></a>
 
-## C9 · Câu 3.7 · Fault tree SAU khi sửa (mã lần chạy: `R-S5-after-20261119-164319-a4ba0f`)
+## C9 · Câu 3.7 · Fault tree SAU khi sửa (mã lần chạy: `R-S5-after-20261119-164718-5b399f`)
 
-**Cây after `R-S5-after-20261119-164319-a4ba0f`:** tác hại xảy ra nếu (1) hoàn sai VÀ gate/sổ đối chiếu hỏng; HOẶC (2) chi phí kép VÀ định tuyến phạm vi hỏng; HOẶC (3) chi phí model cao VÀ trần ngân sách hỏng. Ledger đối chiếu chặn vượt quyền lợi khi dữ liệu đầy đủ; phạm vi loại kho sỉ trong bộ thử; monitor phát hiện chi phí cao nhưng không tự chặn. Đồng bộ sổ trễ, thay đổi loại kho và chi phí ngoài mô phỏng vẫn là nhánh hở.
+**Cây after `R-S5-after-20261119-164718-5b399f`:** tác hại xảy ra nếu (1) hoàn sai VÀ gate/sổ đối chiếu hỏng; HOẶC (2) chi phí kép VÀ định tuyến phạm vi hỏng; HOẶC (3) chi phí model cao VÀ trần ngân sách hỏng. Ledger đối chiếu chặn vượt quyền lợi khi dữ liệu đầy đủ; phạm vi loại kho sỉ trong bộ thử; monitor phát hiện chi phí cao nhưng không tự chặn. Đồng bộ sổ trễ, thay đổi loại kho và chi phí ngoài mô phỏng vẫn là nhánh hở.
 
 Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [gate … hỏng]` và ghi:
 
@@ -415,7 +415,7 @@ Quy tắc: **mỗi dòng phải đổi được một quyết định.** Cột "
 
 ## C11 · Câu 3.7 · Cập nhật checklist 9 nhóm việc và Runbook phần 4–5
 
-**Cập nhật:** chất lượng Xong trên visible (Trần Anh Dũng, report `R-S5-grade-20261119-164317-a4ba0f`); dữ liệu Chưa xác minh đồng bộ thật (Phạm Trấn Quốc, C3.5); chi phí Xong trên mock, Chưa trên pilot thật (Phạm Trấn Quốc, C8); vận hành và pháp lý Chưa diễn tập dừng hoặc xác nhận đầu mối thực (Nguyễn Quang Dũng). Các nhóm checklist khác giữ trạng thái B5; không coi thử mock là diễn tập thực.
+**Cập nhật:** chất lượng Xong trên visible (Trần Anh Dũng, report `R-S5-grade-20261119-164717-5b399f`); dữ liệu Chưa xác minh đồng bộ thật (Phạm Trấn Quốc, C3.5); chi phí Xong trên mock, Chưa trên pilot thật (Phạm Trấn Quốc, C8); vận hành và pháp lý Chưa diễn tập dừng hoặc xác nhận đầu mối thực (Nguyễn Quang Dũng). Các nhóm checklist khác giữ trạng thái B5; không coi thử mock là diễn tập thực.
 
 **Runbook 4 đề xuất:** PIC Phạm Trấn Quốc theo dõi C8 và report theo ca; cảnh báo vàng >5.000đ, đỏ >10.000đ/ticket theo kho. Giữ 1 người duyệt, 6 ca/giờ, 10% kiểm mẫu; HCM-B2B xử lý tay. Khi nghi hoàn sai, tắt `issue_refund`, chuyển hàng đợi cho NV-HANH và đối soát với kế toán. Nguyễn Quang Dũng liên hệ bên ảnh hưởng qua kênh vận hành sau xác minh; thời hạn thông báo cần xác nhận. Không có PII leak trong report giả lập; chưa kết luận dữ liệu thật. S5 xuất phát từ thông báo CFO, dữ liệu chi phí thực và xác nhận vận hành còn thiếu.
 
@@ -427,7 +427,7 @@ Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có 
 
 | # nhóm | Trạng thái mới (Xong / Chưa / Không áp dụng) | Bằng chứng mới (mã lần chạy, mục phiếu, số trong report) | PIC |
 |---|---|---|---|
-| 1 Chất lượng | Xong trên mock | S5 after và regression đạt trong `R-S5-grade-20261119-164317-a4ba0f` | Trần Anh Dũng |
+| 1 Chất lượng | Xong trên mock | S5 after và regression đạt trong `R-S5-grade-20261119-164717-5b399f` | Trần Anh Dũng |
 | 2 Dữ liệu | Chưa | C3.5: chưa xác minh đồng bộ sổ thực | Phạm Trấn Quốc |
 | 3 Bảo mật | Chưa | Mock có 0 PII, cần xác minh trước pilot thực | Nguyễn Quốc Quang Anh |
 | 4 Quyền hạn | Chưa | Switch và gate có trong config; chưa diễn tập quyền bấm và phê duyệt thực | Nguyễn Quốc Quang Anh |
@@ -471,7 +471,7 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 |---|---|
 | Commit ký tiêu chí | `7448a88` |
 | Hash chốt cổng vòng 1 | `ca556bb9` |
-| Mã lần chạy dùng làm bằng chứng | S5 base: `R-S5-before-20261119-164318-a4ba0f` · prepared: `R-S5-prepared-20261119-164318-a4ba0f` · after: `R-S5-after-20261119-164319-a4ba0f` |
+| Mã lần chạy dùng làm bằng chứng | S5 base: `R-S5-before-20261119-164718-5b399f` · prepared: `R-S5-prepared-20261119-164718-5b399f` · after: `R-S5-after-20261119-164718-5b399f` |
 | Vượt trần | After không còn dòng vượt trần; mọi ngưỡng đã ký đạt trên bộ thử. |
 | Kho xấu nhất | Prepared HCM-B2B 10.382đ/ticket > 10.000đ làm tay; nếu xét phân khúc này, chuyển làm tay và không mở rộng. |
 | Quyết định | **Thu hẹp**, trưởng nhóm xác nhận; chờ ghi nhận của cả bàn. |
@@ -486,7 +486,7 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 
 **Chỉ ở v2**
 - Đề xuất đổi từ Tiếp tục sang Thu hẹp do chi phí S5 toàn phạm vi 6.538đ/ticket ở prepared và HCM-B2B 10.382đ/ticket.
-- Report `R-S5-grade-20261119-164317-a4ba0f`: PASS-VISIBLE; test ẩn chưa có.
+- Report `R-S5-grade-20261119-164717-5b399f`: PASS-VISIBLE; test ẩn chưa có.
 - Prepared giảm hoàn sai và lỗi oan xuống 0 nhưng bỏ sót chi phí kho sỉ và hoàn thiếu ở S5-21.
 - Report cho phép cân nhắc Tiếp tục sau khi thu hẹp; đề xuất giữ phạm vi hẹp vì kết quả không chứng minh hiệu quả ở kho đã loại.
 - Chưa đo chi phí thực và đồng bộ sổ trong pilot; kết quả xấu có thể dẫn đến dừng hoặc thay đổi phạm vi.

@@ -44,6 +44,17 @@ def pre_guard(ctx):
 
 def write_gate(ctx, action):
     tool = action.get("tool")
+    if tool == "send_reply" and any(
+        event.get("type") == "guard" and event.get("kind") == "refund_duplicate_blocked"
+        for event in ctx.events
+    ):
+        order = ctx.tools.lookup_order(ctx.ticket.get("order_id"))
+        if order and action.get("customer_id") == order.get("customer_id"):
+            return Verdict.modify(
+                "giải thích khoản hoàn đã ghi trước đó",
+                text="Sổ đã ghi nhận khoản hoàn trước đó cho đơn này. Vui lòng liên hệ CSKH nếu cần đối soát.",
+                amount_vnd=0,
+            )
     if tool not in ("issue_refund", "file_carrier_fault", "notify_carrier"):
         return Verdict.allow()
 
