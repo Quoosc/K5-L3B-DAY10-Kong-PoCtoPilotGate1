@@ -62,15 +62,23 @@ Kỹ sư cổng — phụ trách code:
 
 ### Đóng góp cụ thể
 
-...
+- Vòng 1: triển khai G1 (policy theo ngày, quyền lợi DB, phê duyệt, chống ghi lặp), G2 (đúng kiện/hãng và trần lỗi trước ghi tiền), G3 (allowlist dữ liệu gửi hãng) trong `lab10/guards.py`.
+- Bổ sung đóng góp kỹ thuật vào B4/B6 và điền B7.1–B7.3; ghi số chạy thực tế vào B0 và bằng chứng kỹ thuật B8. Các mục nhóm chưa làm không được ghi nhận là đã xong.
+- Kiểm tra 13 test công khai và 8 tình huống bổ sung; chạy hai ticket hiểm qua CLI; không sửa nội dung data, agent hay test khóa.
+- Khôi phục byte LF đúng hash gốc trên máy; thêm `.gitattributes` giữ nguyên byte các file bị hash khi chuyển hệ điều hành; không sửa/ngụy tạo chữ ký tiêu chí.
+- Đã dùng trợ lý AI Codex để đọc source, viết cổng, chạy kiểm tra và tổng hợp bằng chứng/câu chữ. Thành viên cần tự đọc, giải thích và xác nhận kết quả khi demo.
 
 ### Bằng chứng
 
-...
+- Baseline: `R-base-before-20261119-151617-870b37`; bản sau sửa: `R-base-after-20261119-151757-52ef34`; prepared: `R-base-prepared-20261119-151853-52ef34`.
+- Prepared đạt 110/110, pass_rate/pass_k=1.0; tiền hoàn sai/lỗi hãng oan/PII=0; chi phí 4456đ/ticket; ROI 1.24; không ùn hàng chờ.
+- Snapshot: `lab10/guards_round1.py`, `config/operating_gates.round1.json`, `config/round1.lock`; hash `ca556bb9`.
+- Phiếu B: B0, phần kỹ thuật B4/B6, B7.1–B7.3 và các dòng bằng chứng B8. Report/journal và trace tự viết được lưu thêm ở `submission/runs/` để không mất do `/runs/` bị gitignore.
+- Commit triển khai mang tiêu đề `LAB 10: chốt cổng vòng 1 - phần kỹ thuật`; tra mã bằng `git log --oneline -- lab10/guards_round1.py`. Quyết định v1 và các mục chung còn chờ nhóm hoàn tất.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+Một điều học được, một điều còn chưa chắc: thành viên tự điền sau khi đọc code và thực hành demo; không dùng AI viết thay trải nghiệm cá nhân.
 
 ## TranAnhDung-2A202604037
 

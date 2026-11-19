@@ -1,0 +1,9 @@
+# Lab hashes use raw bytes. Preserve signed files and frozen snapshots across OSes.
+/data/** -text
+/lab10/*.py -text whitespace=cr-at-eol
+/tests/*.py -text
+/config/acceptance_criteria.json -text
+/config/*.lock -text whitespace=cr-at-eol
+/config/operating_gates.round1.json -text whitespace=cr-at-eol
+/TEAM.md text eol=lf
+/templates/*.md text eol=lf

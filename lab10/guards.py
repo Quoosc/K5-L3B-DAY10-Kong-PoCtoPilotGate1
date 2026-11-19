@@ -34,9 +34,93 @@ from .tools import Verdict
 
 
 def pre_guard(ctx):
-    return Verdict.allow()
+    # G1: select by effective dates, never by the cached index_active flag.
+    policy = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
+    if policy is None:
+        return Verdict.escalate("không có chính sách hiệu lực, cần người duyệt")
+    ctx.log("policy_pinned", policy_id=policy["policy_id"])
+    return Verdict.allow(policy_id=policy["policy_id"])
 
 
 def write_gate(ctx, action):
-    # action = {"tool": "issue_refund", "ticket_id":..., "order_id":..., "amount_vnd":..., "payer":..., ...}
+    tool = action.get("tool")
+    if tool not in ("issue_refund", "file_carrier_fault", "notify_carrier"):
+        return Verdict.allow()
+
+    order = ctx.tools.lookup_order(ctx.ticket.get("order_id"))
+    policy = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
+    if order is None or policy is None or not order.get("parcels"):
+        return Verdict.escalate("thiếu đơn, kiện hoặc chính sách để kiểm tra lệnh ghi")
+    if order["customer_id"] != ctx.ticket.get("customer_id"):
+        return Verdict.escalate("người yêu cầu không phải chủ đơn")
+    pid = ctx.ticket.get("parcel_id")
+    if pid and not any(p["parcel_id"] == pid for p in order["parcels"]):
+        return Verdict.escalate("mã kiện không thuộc đơn, cần xác minh")
+    parcel = H.ticket_parcel(order, ctx.ticket, ctx.as_of)
+    delay = H.db_delay_days(parcel, ctx.as_of)
+
+    # G1: money is validated before the FIRST write, without trusting ticket text.
+    if tool == "issue_refund":
+        if action.get("order_id") != order["order_id"] or action.get("ticket_id") != ctx.ticket["ticket_id"]:
+            return Verdict.escalate("lệnh hoàn không khớp đơn hoặc ticket")
+        if ctx.tools.ledger_rows(order_id=order["order_id"]):
+            ctx.log("refund_duplicate_blocked", order_id=order["order_id"])
+            return Verdict.deny("sổ cái đã có khoản hoàn cho đơn, không ghi lần nữa")
+        if parcel.get("delay_cause") is None and delay > 0:
+            return Verdict.escalate("tracking chưa ghi nguyên nhân trễ, cần xác minh")
+        if action.get("basis") != "policy":
+            return Verdict.escalate("không giải ngân theo nhánh dự phòng fail-open")
+        expected = H.entitlement_vnd(policy, order, delay, parcel.get("delay_cause"))
+        if action.get("amount_vnd") != expected or action.get("payer", "LOGIX") != "LOGIX":
+            ctx.log("refund_fact_mismatch", expected_vnd=expected, proposed_vnd=action.get("amount_vnd"))
+            return Verdict.deny("tiền hoặc bên trả không khớp quyền lợi tính từ tracking và chính sách")
+        cap = ctx.tools.ops_limits().get("max_auto_strikes_per_carrier_per_day")
+        if H.carrier_at_fault(policy, parcel, delay) and cap is not None:
+            if len(ctx.tools.fault_rows(carrier_id=parcel["carrier_id"])) >= cap:
+                return Verdict.escalate("đạt trần lỗi hãng tự động; chuyển người trước khi ghi tiền")
+        approval_id = action.get("approval_id")
+        if expected > policy["auto_limit_vnd"] or approval_id:
+            approvals = ctx.tools.lookup_approvals(approval_id=approval_id) if approval_id else []
+            approver = (ctx.gates or {}).get("operations", {}).get("approver_id")
+            valid = any(
+                a.get("ticket_id") == ctx.ticket["ticket_id"]
+                and a.get("order_id") == order["order_id"]
+                and a.get("customer_id") == order["customer_id"]
+                and a.get("status") == "valid"
+                and a.get("expires_at", "") >= ctx.as_of
+                and a.get("max_vnd", 0) >= expected
+                and bool(a.get("approver_id"))
+                and (not approver or a.get("approver_id") == approver)
+                for a in approvals
+            )
+            if not valid:
+                return Verdict.escalate("phê duyệt thiếu, hết hiệu lực hoặc không đúng thẩm quyền/ticket")
+
+    # G2: attribute a strike to the actual parcel, using recorded tracking facts.
+    if tool == "file_carrier_fault":
+        if not H.carrier_at_fault(policy, parcel, delay):
+            return Verdict.deny("tracking và chính sách không đủ căn cứ ghi lỗi hãng")
+        if ctx.tools.fault_rows(order_id=order["order_id"], parcel_id=parcel["parcel_id"]):
+            return Verdict.deny("đã ghi lỗi cho kiện này")
+        facts = {"parcel_id": parcel["parcel_id"], "carrier_id": parcel["carrier_id"],
+                 "driver_id": parcel.get("driver_id"), "delay_days": delay}
+        if any(action.get(k) != v for k, v in facts.items()):
+            ctx.log("carrier_fact_mismatch", parcel_id=parcel["parcel_id"])
+            return Verdict.modify("ghi lỗi đúng kiện, hãng, tài xế và độ trễ trong tracking", **facts)
+
+    # G3: construct the carrier payload from an allowlist, never forward free text/contacts.
+    if tool == "notify_carrier":
+        faults = ctx.tools.fault_rows(ticket_id=ctx.ticket["ticket_id"], order_id=order["order_id"])
+        fault = next((f for f in reversed(faults) if f["parcel_id"] == parcel["parcel_id"]), None)
+        if fault is None:
+            return Verdict.deny("không có bản ghi lỗi tương ứng để thông báo hãng")
+        facts = {"order_id": order["order_id"], "parcel_id": fault["parcel_id"],
+                 "district": order["recipient"]["district"], "delay_days": fault["delay_days"]}
+        allowed = set(policy.get("carrier_notice_fields", []))
+        blocked = set((ctx.gates or {}).get("legal", {}).get("pii_fields_blocked_to_third_party", []))
+        payload = {k: v for k, v in facts.items() if k in allowed and k not in blocked}
+        if payload != action.get("payload") or action.get("carrier_id") != fault["carrier_id"]:
+            ctx.log("carrier_payload_filtered", dropped=sorted(set(action.get("payload", {})) - set(payload)))
+            return Verdict.modify("chỉ gửi dữ kiện nghiệp vụ trong allowlist của chính sách",
+                                  carrier_id=fault["carrier_id"], payload=payload)
     return Verdict.allow()
