@@ -16,7 +16,7 @@ Họ tên đầy đủ và MSSV của **mọi** thành viên; bàn 3 người th
 |   1 | Phạm Trấn Quốc | 2A202604113 | Sản phẩm và kinh doanh | Có |
 |   2 | Nguyễn Quốc Quang Anh | 2A202604120 | Kỹ sư cổng — phụ trách code | |
 |   3 | Trần Anh Dũng | 2A202604037 | Kỹ sư cổng — phụ trách đo và giám sát | |
-|   4 | Nguyễn Quang Dũng | 2A202604037 | Vận hành và pháp lý | |
+|   4 | Nguyễn Quang Dũng | 2A202604031 | Vận hành và pháp lý | |
 
 Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, khớp bảng trên.
 
