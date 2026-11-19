@@ -29,20 +29,28 @@ Mỗi thành viên tự viết một mục bên dưới (chép mẫu, đổi ti�
 ### Phần việc phụ trách
 
 Trưởng nhóm · Sản phẩm và kinh doanh:
-- Vòng 1: Chủ trì Phiếu A, tiêu chí và việc ký; làm bản đồ dữ liệu B3; điền `business`; chủ trì ghi quyết định v1.
-- Vòng 2: Viết specification; đọc chi phí, ROI, phạm vi pilot; điều chỉnh `business`; chủ trì ghi v2.
+- Vòng 1: Chủ trì Phiếu A, thiết lập các ngưỡng an toàn và kinh tế, thực hiện ký niêm phong Bản tiêu chí chấp nhận (`config/acceptance_criteria.json`); phân tích bản đồ dữ liệu và rủi ro drift (Phiếu B mục B3); cấu hình cổng kinh tế `business` trong `config/operating_gates.json` (Phiếu B mục B7.4); chủ trì thảo luận và phê duyệt quyết định Gate 1 bản v1.
+- Vòng 2: Viết specification ngăn chặn sự cố (Phiếu C mục C5); phân tích đánh giá chi phí mỗi ticket, ROI và điều chỉnh phạm vi pilot (`pilot_scope`); chủ trì chốt quyết định Gate 1 bản v2 cùng 3 dòng bắt buộc.
 
 ### Đóng góp cụ thể
 
-...
+- Xác lập toàn bộ các chỉ số bắt buộc và ngưỡng an toàn trong `config/acceptance_criteria.json`: `wrongful_refund_vnd_max = 0`, `wrongful_carrier_faults_max = 0`, `pii_leaks_max = 0`, `pass_rate_min = 0.85`, `pass_k_min = 0.80`, `cost_per_ticket_vnd_max = 5000`, `roi_min = 0.20`, `queue_stuck_max = 0`.
+- Hoàn thiện toàn bộ nội dung Phiếu A (`templates/form-a-criteria.md`): Câu 1.1 (mục tiêu hệ thống), Câu 1.2 (góc nhìn kế toán đối soát & trưởng ca CSKH), Câu 1.3 & 1.4 (thước đo offline & telemetry production), Câu 1.5 (phân tích khoảng tin cậy), Câu 1.6 (câu điều kiện, soát 4 câu hỏi, ranh giới đầu ra).
+- Thực thi ký niêm phong Bản tiêu chí chấp nhận bằng lệnh `python -m lab10.criteria sign` đúng quy định trước khi chạy đánh giá.
+- Hoàn thiện Bản đồ dữ liệu hệ thống và phân tích kịch bản drift chính sách trong 3 tháng tới tại Phiếu B mục B3.
+- Cấu hình các cổng kinh doanh trong `config/operating_gates.json` mục `business` và lập luận lý do dựa trên `ops_limits` và `ops_facts`.
 
 ### Bằng chứng
 
-...
+- Commit ký tiêu chí: `7448a88` ("Sign acceptance criteria").
+- File khóa niêm phong: `config/acceptance_criteria.lock` (hash: `0f2b62d6a8fe7de0d19cb5c4c0f13c72aa8d2b90a38fafa048cfd19d67846ff9`).
+- File cấu hình: `config/acceptance_criteria.json`, `config/operating_gates.json` (mục `business`).
+- Tài liệu: `templates/form-a-criteria.md` (mục A1–A5), `templates/form-b-evaluation-gates.md` (mục B3, B7.4).
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- **Một điều học được**: Hiểu sâu sắc triết lý "Đặt luật trước, xem số sau" trong phát triển hệ thống AI Agent: Việc khoá tiêu chí chấp nhận độc lập trước khi chạy thực nghiệm giúp bảo vệ quyết định kinh doanh không bị thiên kiến và ngăn chặn tình trạng hạ chuẩn kỹ thuật để che giấu rủi ro.
+- **Một điều còn chưa chắc**: Trong điều kiện triển khai thực tế trên diện rộng (12 kho), làm thế nào để cân bằng tối ưu giữa trần ngân sách bồi thường tự động và nguy cơ khách hàng phàn nàn khi các ca hợp lệ bị đẩy sang hàng chờ duyệt thủ công vào những đợt siêu khuyến mãi.
 
 ## NguyenQuocQuangAnh-2A202604120
 
