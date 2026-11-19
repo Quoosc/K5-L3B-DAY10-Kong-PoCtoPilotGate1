@@ -121,6 +121,24 @@ def write_gate(ctx, action):
         if remaining <= 0:
             ctx.log("refund_duplicate_blocked", order_id=order["order_id"])
             return Verdict.deny("đơn đã được hoàn đủ hoặc vượt quyền lợi")
+        # Only unapproved writes consume the automatic-refund allowance.
+        # ledger_rows has no per-row date or seed marker. Both totals below
+        # bound this customer's automatic spend today from above; their minimum
+        # is safe and avoids counting historical seed rows when today is empty.
+        customer_cap = ctx.tools.ops_limits().get("max_auto_refund_per_customer_per_day_vnd")
+        if customer_cap is not None and not approval_id:
+            auto_rows = [row for row in ctx.tools.ledger_rows(customer_id=order["customer_id"])
+                         if not row.get("approval_id")]
+            if any(type(row.get("amount_vnd")) is not int or row["amount_vnd"] < 0 for row in auto_rows):
+                return Verdict.escalate("sổ hoàn tự động của khách không hợp lệ, cần đối soát")
+            customer_total = sum(row["amount_vnd"] for row in auto_rows)
+            all_customers_today = ctx.tools.auto_refund_today_vnd()
+            spent_upper_bound = min(customer_total, all_customers_today)
+            if spent_upper_bound + remaining > customer_cap:
+                ctx.log("customer_auto_refund_limit", customer_id=order["customer_id"],
+                        spent_upper_bound_vnd=spent_upper_bound, remaining_vnd=remaining,
+                        limit_vnd=customer_cap)
+                return Verdict.escalate("khoản mới có thể vượt trần hoàn tự động của khách trong ngày; cần người duyệt")
         if prior:
             ctx.log("refund_remaining", entitlement_vnd=expected, paid_vnd=paid, remaining_vnd=remaining)
             return Verdict.modify("chỉ hoàn phần quyền lợi còn thiếu theo sổ cái", amount_vnd=remaining)

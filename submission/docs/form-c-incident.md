@@ -36,6 +36,8 @@ Mỗi lệnh `lab10.eval` và `lab10.grade` tự ghi một dòng vào `runs/jour
 | 4 | R-S5-grade-20261119-164717-5b399f | base · after | grade kiểm regression | 1 [1; 1] | 1 | 0 · 0 · 0 | 0,2273 | Không có ca nền mới hỏng. |
 | 5 | R-S5-after-20261119-170612-a63d76 | S5 · after | Chỉ sửa phản hồi sau confirm retry: dùng tiền đã ghi của chính ticket | 1 [1; 1] | 1 | 0 · 0 · 0 | 0,1667 | 90/90 đạt; không đổi phạm vi hay config |
 | 6 | R-S5-grade-20261119-170612-a63d76 | S5 và base · ba mốc | Kiểm lại đúng code sau sửa nhánh retry | S5 1 [1; 1]; base 1 [1; 1] | 1 | 0 · 0 · 0 | S5 0,1667; base 0,2273 | PASS-VISIBLE; integrity/criteria/regression/monitor đạt, chưa có test ẩn |
+| 7 | R-S5-after-20261119-172920-d299fd | S5 · after | Chỉ thêm kiểm trần hoàn tự động theo khách/ngày trước ghi; không đổi config | 1 [1; 1] | 1 | 0 · 0 · 0 | 0,1667 | S5 90/90; ca 310000đ được kiểm riêng bằng test bổ sung |
+| 8 | R-S5-grade-20261119-172920-d299fd | S5 và base · ba mốc | Kiểm lại đúng code sau bổ sung cổng hạn mức khách | S5 1 [1; 1]; base 1 [1; 1] | 1 | 0 · 0 · 0 | S5 0,1667; base 0,2273 | PASS-VISIBLE; không có ca nền mới hỏng |
 
 ---
 
@@ -361,6 +363,16 @@ Lệnh tái lập: `python -X utf8 -B submission/runs/s5-engineering-checks.py`.
 
 ---
 
+**Bổ sung sau kiểm tra trần theo khách (nhánh [5]):** `ops_limits.max_auto_refund_per_customer_per_day_vnd = 300000` và ranh giới đầu ra Phiếu A yêu cầu người duyệt khi vượt trần. Bản trước sửa cho phép hai đơn khác nhau của cùng khách tự hoàn 155000đ mỗi đơn (310000đ); đây là tình huống kiểm tra bổ sung trong World, không phải nhãn hay ticket mới của bộ S5.
+
+| Nhánh | Chỗ sửa và tác dụng | Bằng chứng | Giới hạn |
+|---|---|---|---|
+| [5] Cộng dồn nhiều đơn của một khách | `write_gate` nhánh issue_refund: sau kiểm trùng và phê duyệt, trước mọi ghi, so phần còn thiếu với trần đọc từ ops_limits; không có approval hợp lệ thì chuyển người khi có thể vượt trần. Khoản có approval đã qua đầy đủ kiểm tra không tính là hoàn tự động. | 155000 + 155000: khoản thứ hai chuyển người, không ghi tiền/lỗi hãng; 150000 + 150000 được phép; 150000 + 150001 bị chặn. Kiểm cả khác khách, approval hợp lệ/không hợp lệ, phần còn thiếu 12000đ tại mức 300000đ, retry và ngày mới. | API ledger_rows không có ngày/seed marker cho từng dòng. Lấy min(tổng hoàn không approval của khách trong sổ, tổng hoàn tự động hôm nay của mọi khách) làm cận trên; không bỏ sót mức vượt trần nhưng có thể chuyển duyệt sớm khi sổ lịch sử lớn và khách khác đã hoàn trong ngày. Không coi đây là truy vấn chính xác lịch sử theo ngày trong production. |
+
+Script kiểm tra hiện có **16 tình huống × 5 seed = 80 subcase**, gồm 30 subcase trước và 50 subcase mới; tất cả đạt. 13 test công khai vẫn đạt. Trace ranh giới: `submission/runs/s5-engineering-traces/customer-daily-cap.json`; eval `R-S5-after-20261119-172920-d299fd`, grade `R-S5-grade-20261119-172920-d299fd`. Giới hạn trần theo khách được ghi ở B7 vòng 1 là trạng thái lịch sử của snapshot; cổng mới thuộc vòng 2, không sửa lại snapshot hoặc Phiếu B. Chưa chứng minh tính nguyên tử khi có hai giao dịch đồng thời ngoài mô phỏng.
+
+---
+
 <a id="c8"></a>
 
 ## C8 · Câu 3.6 · Chỉ số theo dõi mới (thước đo → dữ liệu → cách tính)
@@ -385,9 +397,9 @@ Thẻ S5 dùng mục này cho một con số kinh doanh: chi phí mỗi ticket t
 
 <a id="c9"></a>
 
-## C9 · Câu 3.7 · Fault tree SAU khi sửa (mã lần chạy: `R-S5-after-20261119-170615-a63d76`)
+## C9 · Câu 3.7 · Fault tree SAU khi sửa (mã lần chạy: `R-S5-after-20261119-172922-d299fd`)
 
-**Cây after `R-S5-after-20261119-170615-a63d76`:** tác hại xảy ra nếu (1) hoàn sai VÀ gate/sổ đối chiếu hỏng; HOẶC (2) chi phí kép VÀ định tuyến phạm vi hỏng; HOẶC (3) chi phí model cao VÀ trần ngân sách hỏng. Ledger đối chiếu chặn vượt quyền lợi khi dữ liệu đầy đủ; phạm vi loại kho sỉ trong bộ thử; monitor phát hiện chi phí cao nhưng không tự chặn. Đồng bộ sổ trễ, thay đổi loại kho và chi phí ngoài mô phỏng vẫn là nhánh hở.
+**Cây after `R-S5-after-20261119-172922-d299fd`:** tác hại xảy ra nếu (1) hoàn sai VÀ gate/sổ đối chiếu hỏng; HOẶC (2) chi phí kép VÀ định tuyến phạm vi hỏng; HOẶC (3) chi phí model cao VÀ trần ngân sách hỏng. Ledger đối chiếu chặn vượt quyền lợi khi dữ liệu đầy đủ; phạm vi loại kho sỉ trong bộ thử; monitor phát hiện chi phí cao nhưng không tự chặn. Đồng bộ sổ trễ, thay đổi loại kho và chi phí ngoài mô phỏng vẫn là nhánh hở.
 
 Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [gate … hỏng]` và ghi:
 
@@ -397,7 +409,8 @@ Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [g
  ├─ [1] hoàn sai VÀ gate ledger hoặc dữ liệu sổ hỏng
  ├─ [2] chi phí kép VÀ định tuyến phạm vi hỏng
  ├─ [3] chi phí model cao VÀ ngân sách không ngăn được (cần đo giá thực)
- └─ [4] confirm lỗi sau ghi thành công VÀ cổng phản hồi không đối chiếu ledger của chính ticket
+ ├─ [4] confirm lỗi sau ghi thành công VÀ cổng phản hồi không đối chiếu ledger của chính ticket
+ └─ [5] nhiều đơn của cùng khách VÀ kiểm trần theo khách hỏng / sổ hiện tại thiếu
 ```
 
 | Nhánh | Gate (hàm trong `guards.py` / khoá config / metric trong `monitors.py`) | Tầng gate (phát hiện / chặn / giới hạn thiệt hại / vận hành) | Giảm hay ngăn? Vì sao | Nhánh còn hở |
@@ -406,10 +419,13 @@ Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [g
 | [2] | `business.pilot_scope` | Vận hành | Giảm chi phí trợ lý cho kho bị loại | Chi phí làm tay, thay đổi cơ cấu kho |
 | [3] | `cost_budget_per_ticket_vnd` và monitor | Giới hạn / phát hiện | Giảm chi phí trong mock, monitor không tự chặn | Biểu giá thực, chi phí đứng chờ |
 | [4] | `write_gate` nhánh send_reply, tổng ledger đúng ticket/đơn | Chặn sai lệch phản hồi | Khớp tiền đã ghi trong 10 subcase retry (2 loại × 5 seed); không biến khoản của ticket trước thành khoản mới | Sổ ngoài hệ thống thiếu hoặc đồng bộ trễ; cập nhật đồng thời chưa có bằng chứng khóa giao dịch |
+| [5] | `write_gate` kiểm cận trên hoàn tự động của khách cộng phần còn thiếu với trần ops_limits | Giới hạn / chuyển người trước ghi | Chặn tổng 310000đ không approval; vẫn cho đúng 300000đ và approval hợp lệ | Sổ thiếu; cập nhật đồng thời; API thiếu ngày từng dòng có thể khiến chuyển người sớm |
 
 ---
 
 **Bằng chứng rà soát mới:** grade `R-S5-grade-20261119-170612-a63d76` vẫn giữ mọi ô nhìn thấy đạt; trace S5-21 prepared/after và hai trace retry bổ sung tại `submission/runs/s5-engineering-traces/`. Nhánh [4] bổ sung từ kiểm thử kỹ thuật, không khẳng định đây là triệu chứng quan sát trên thẻ gốc.
+
+**Xác minh sau bổ sung [5]:** `R-S5-grade-20261119-172920-d299fd` giữ nguyên các chỉ số S5/base và mọi ô nhìn thấy đạt. Bản chốt vòng 1 vẫn là `ca556bb9`; không thay đổi số liệu đã đo hoặc quyết định v1.
 
 <a id="c10"></a>
 
@@ -489,7 +505,7 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 |---|---|
 | Commit ký tiêu chí | `7448a88` |
 | Hash chốt cổng vòng 1 | `ca556bb9` |
-| Mã lần chạy dùng làm bằng chứng | S5 base: `R-S5-before-20261119-170614-a63d76` · prepared: `R-S5-prepared-20261119-170614-a63d76` · after: `R-S5-after-20261119-170615-a63d76` |
+| Mã lần chạy dùng làm bằng chứng | S5 base: `R-S5-before-20261119-172922-d299fd` · prepared: `R-S5-prepared-20261119-172922-d299fd` · after: `R-S5-after-20261119-172922-d299fd` |
 | Vượt trần | After không còn dòng vượt trần; mọi ngưỡng đã ký đạt trên bộ thử. |
 | Kho xấu nhất | Prepared HCM-B2B 10.382đ/ticket > 10.000đ làm tay; nếu xét phân khúc này, chuyển làm tay và không mở rộng. |
 | Quyết định | **Thu hẹp**, trưởng nhóm xác nhận; chờ ghi nhận của cả bàn. |
@@ -504,7 +520,7 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 
 **Chỉ ở v2**
 - Đề xuất đổi từ Tiếp tục sang Thu hẹp do chi phí S5 toàn phạm vi 6.538đ/ticket ở prepared và HCM-B2B 10.382đ/ticket.
-- Report `R-S5-grade-20261119-170612-a63d76`: PASS-VISIBLE; test ẩn chưa có.
+- Report `R-S5-grade-20261119-172920-d299fd`: PASS-VISIBLE; test ẩn chưa có.
 - Prepared giảm hoàn sai và lỗi oan xuống 0 nhưng bỏ sót chi phí kho sỉ và hoàn thiếu ở S5-21.
 - Report cho phép cân nhắc Tiếp tục sau khi thu hẹp; đề xuất giữ phạm vi hẹp vì kết quả không chứng minh hiệu quả ở kho đã loại.
 - Chưa đo chi phí thực và đồng bộ sổ trong pilot; kết quả xấu có thể dẫn đến dừng hoặc thay đổi phạm vi.
@@ -515,3 +531,5 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 3. Vì data là mock, cần đo lại gì trong pilot thật trước Bước đánh giá 2: đo chi phí máy, công duyệt, chi phí trực và tiền hoàn sai theo từng kho; kiểm ROI, độ phủ, độ trễ đồng bộ sổ và tải hàng chờ trong các ca cao điểm.
 
 **Ghi chú kiểm chứng kỹ thuật:** cập nhật mã report sau sửa nhánh phản hồi retry; số liệu chất lượng, chi phí, ROI và độ phủ không đổi. Không thay quyết định Thu hẹp của trưởng nhóm hoặc ghi nhận thay sự xác nhận của các thành viên khác.
+
+**Đối chiếu sau sửa cổng hạn mức khách:** report hiện tại khớp code mới; vẫn 90/90 lượt S5, 3980đ/ticket, ROI 1.51, độ phủ 60%. Giữ nguyên quyết định Thu hẹp và ba dòng bắt buộc, không xác nhận thay các thành viên.

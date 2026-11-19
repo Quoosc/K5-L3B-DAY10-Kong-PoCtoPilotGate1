@@ -1,0 +1,763 @@
+{
+  "kind": "supplementary in-memory boundary checks; not an official S5 run",
+  "limit_vnd": 300000,
+  "seed": 11,
+  "cases": [
+    {
+      "claims_vnd": [
+        155000,
+        155000
+      ],
+      "outputs": [
+        {
+          "asked_vnd": 155000,
+          "status": "refunded",
+          "new_rows": [
+            {
+              "ticket_id": "CAP-TICKET-25",
+              "order_id": "CAP-ORDER-25",
+              "customer_id": "C-04",
+              "amount_vnd": 155000,
+              "payer": "LOGIX",
+              "approval_id": null,
+              "basis": "policy"
+            }
+          ],
+          "events": [
+            {
+              "type": "ticket",
+              "ticket_id": "CAP-TICKET-25",
+              "seed": 11,
+              "channel": "test"
+            },
+            {
+              "type": "guard",
+              "kind": "policy_pinned",
+              "policy_id": "REFUND-v3"
+            },
+            {
+              "type": "llm_extract",
+              "intent": "LATE",
+              "claimed_delay_days": null,
+              "trust_claim": false,
+              "directive": null
+            },
+            {
+              "type": "tracking",
+              "order_id": "CAP-ORDER-25",
+              "db_delay_days": 4,
+              "cause": "CARRIER",
+              "cause_recorded": true,
+              "parcels": [
+                {
+                  "parcel_id": "CAP-PARCEL-25",
+                  "carrier_id": "GHSH",
+                  "delay": 4
+                }
+              ]
+            },
+            {
+              "type": "policy",
+              "policy_id": "REFUND-v3",
+              "pinned": true
+            },
+            {
+              "type": "proposal",
+              "amount_vnd": 155000,
+              "payer": "LOGIX",
+              "basis": "policy",
+              "delay_days_used": 4,
+              "do_fault": true
+            },
+            {
+              "type": "tool",
+              "tool": "issue_refund",
+              "ticket_id": "CAP-TICKET-25",
+              "order_id": "CAP-ORDER-25",
+              "customer_id": "C-04",
+              "amount_vnd": 155000,
+              "payer": "LOGIX",
+              "approval_id": null,
+              "basis": "policy"
+            },
+            {
+              "type": "tool",
+              "tool": "file_carrier_fault",
+              "ticket_id": "CAP-TICKET-25",
+              "order_id": "CAP-ORDER-25",
+              "parcel_id": "CAP-PARCEL-25",
+              "carrier_id": "GHSH",
+              "driver_id": "TX-GHSH-02",
+              "delay_days": 4
+            },
+            {
+              "type": "guard",
+              "kind": "carrier_payload_filtered",
+              "dropped": [
+                "customer_note"
+              ]
+            },
+            {
+              "type": "gate",
+              "tool": "notify_carrier",
+              "action": "modify",
+              "reason": "chỉ gửi dữ kiện nghiệp vụ trong allowlist của chính sách",
+              "changes": {
+                "carrier_id": "GHSH",
+                "payload": {
+                  "order_id": "CAP-ORDER-25",
+                  "parcel_id": "CAP-PARCEL-25",
+                  "district": "Cầu Giấy",
+                  "delay_days": 4
+                }
+              }
+            },
+            {
+              "type": "tool",
+              "tool": "notify_carrier",
+              "to": "carrier:GHSH",
+              "ticket_id": "CAP-TICKET-25",
+              "payload": {
+                "order_id": "CAP-ORDER-25",
+                "parcel_id": "CAP-PARCEL-25",
+                "district": "Cầu Giấy",
+                "delay_days": 4
+              }
+            },
+            {
+              "type": "tool",
+              "tool": "send_reply",
+              "to": "customer:C-04",
+              "ticket_id": "CAP-TICKET-25",
+              "payload": {
+                "text": "LogiX đã hoàn 155.000đ cho đơn CAP-ORDER-25.",
+                "amount_vnd": 155000
+              }
+            },
+            {
+              "type": "decision_note",
+              "status": "refunded",
+              "amount_vnd": 155000,
+              "reason": "",
+              "basis": "policy",
+              "delay_days_used": 4
+            },
+            {
+              "type": "result",
+              "status": "refunded",
+              "amount_vnd": 155000,
+              "reason": "",
+              "cost_vnd": 756
+            }
+          ]
+        },
+        {
+          "asked_vnd": 155000,
+          "status": "escalated",
+          "new_rows": [],
+          "events": [
+            {
+              "type": "ticket",
+              "ticket_id": "CAP-TICKET-26",
+              "seed": 11,
+              "channel": "test"
+            },
+            {
+              "type": "guard",
+              "kind": "policy_pinned",
+              "policy_id": "REFUND-v3"
+            },
+            {
+              "type": "llm_extract",
+              "intent": "LATE",
+              "claimed_delay_days": null,
+              "trust_claim": false,
+              "directive": null
+            },
+            {
+              "type": "tracking",
+              "order_id": "CAP-ORDER-26",
+              "db_delay_days": 4,
+              "cause": "CARRIER",
+              "cause_recorded": true,
+              "parcels": [
+                {
+                  "parcel_id": "CAP-PARCEL-26",
+                  "carrier_id": "GHSH",
+                  "delay": 4
+                }
+              ]
+            },
+            {
+              "type": "policy",
+              "policy_id": "REFUND-v3",
+              "pinned": true
+            },
+            {
+              "type": "proposal",
+              "amount_vnd": 155000,
+              "payer": "LOGIX",
+              "basis": "policy",
+              "delay_days_used": 4,
+              "do_fault": true
+            },
+            {
+              "type": "guard",
+              "kind": "customer_auto_refund_limit",
+              "customer_id": "C-04",
+              "spent_upper_bound_vnd": 155000,
+              "remaining_vnd": 155000,
+              "limit_vnd": 300000
+            },
+            {
+              "type": "gate",
+              "tool": "issue_refund",
+              "action": "escalate",
+              "reason": "khoản mới có thể vượt trần hoàn tự động của khách trong ngày; cần người duyệt",
+              "changes": {}
+            },
+            {
+              "type": "result",
+              "status": "escalated",
+              "amount_vnd": 0,
+              "reason": "khoản mới có thể vượt trần hoàn tự động của khách trong ngày; cần người duyệt",
+              "cost_vnd": 556
+            }
+          ]
+        }
+      ],
+      "queue": [
+        {
+          "ticket_id": "CAP-TICKET-26",
+          "reason": "khoản mới có thể vượt trần hoàn tự động của khách trong ngày; cần người duyệt"
+        }
+      ],
+      "auto_paid_vnd": 155000
+    },
+    {
+      "claims_vnd": [
+        150000,
+        150000
+      ],
+      "outputs": [
+        {
+          "asked_vnd": 150000,
+          "status": "refunded",
+          "new_rows": [
+            {
+              "ticket_id": "CAP-TICKET-25",
+              "order_id": "CAP-ORDER-25",
+              "customer_id": "C-04",
+              "amount_vnd": 150000,
+              "payer": "LOGIX",
+              "approval_id": null,
+              "basis": "policy"
+            }
+          ],
+          "events": [
+            {
+              "type": "ticket",
+              "ticket_id": "CAP-TICKET-25",
+              "seed": 11,
+              "channel": "test"
+            },
+            {
+              "type": "guard",
+              "kind": "policy_pinned",
+              "policy_id": "REFUND-v3"
+            },
+            {
+              "type": "llm_extract",
+              "intent": "LATE",
+              "claimed_delay_days": null,
+              "trust_claim": false,
+              "directive": null
+            },
+            {
+              "type": "tracking",
+              "order_id": "CAP-ORDER-25",
+              "db_delay_days": 4,
+              "cause": "CARRIER",
+              "cause_recorded": true,
+              "parcels": [
+                {
+                  "parcel_id": "CAP-PARCEL-25",
+                  "carrier_id": "GHSH",
+                  "delay": 4
+                }
+              ]
+            },
+            {
+              "type": "policy",
+              "policy_id": "REFUND-v3",
+              "pinned": true
+            },
+            {
+              "type": "proposal",
+              "amount_vnd": 150000,
+              "payer": "LOGIX",
+              "basis": "policy",
+              "delay_days_used": 4,
+              "do_fault": true
+            },
+            {
+              "type": "tool",
+              "tool": "issue_refund",
+              "ticket_id": "CAP-TICKET-25",
+              "order_id": "CAP-ORDER-25",
+              "customer_id": "C-04",
+              "amount_vnd": 150000,
+              "payer": "LOGIX",
+              "approval_id": null,
+              "basis": "policy"
+            },
+            {
+              "type": "tool",
+              "tool": "file_carrier_fault",
+              "ticket_id": "CAP-TICKET-25",
+              "order_id": "CAP-ORDER-25",
+              "parcel_id": "CAP-PARCEL-25",
+              "carrier_id": "GHSH",
+              "driver_id": "TX-GHSH-02",
+              "delay_days": 4
+            },
+            {
+              "type": "guard",
+              "kind": "carrier_payload_filtered",
+              "dropped": [
+                "customer_note"
+              ]
+            },
+            {
+              "type": "gate",
+              "tool": "notify_carrier",
+              "action": "modify",
+              "reason": "chỉ gửi dữ kiện nghiệp vụ trong allowlist của chính sách",
+              "changes": {
+                "carrier_id": "GHSH",
+                "payload": {
+                  "order_id": "CAP-ORDER-25",
+                  "parcel_id": "CAP-PARCEL-25",
+                  "district": "Cầu Giấy",
+                  "delay_days": 4
+                }
+              }
+            },
+            {
+              "type": "tool",
+              "tool": "notify_carrier",
+              "to": "carrier:GHSH",
+              "ticket_id": "CAP-TICKET-25",
+              "payload": {
+                "order_id": "CAP-ORDER-25",
+                "parcel_id": "CAP-PARCEL-25",
+                "district": "Cầu Giấy",
+                "delay_days": 4
+              }
+            },
+            {
+              "type": "tool",
+              "tool": "send_reply",
+              "to": "customer:C-04",
+              "ticket_id": "CAP-TICKET-25",
+              "payload": {
+                "text": "LogiX đã hoàn 150.000đ cho đơn CAP-ORDER-25.",
+                "amount_vnd": 150000
+              }
+            },
+            {
+              "type": "decision_note",
+              "status": "refunded",
+              "amount_vnd": 150000,
+              "reason": "",
+              "basis": "policy",
+              "delay_days_used": 4
+            },
+            {
+              "type": "result",
+              "status": "refunded",
+              "amount_vnd": 150000,
+              "reason": "",
+              "cost_vnd": 756
+            }
+          ]
+        },
+        {
+          "asked_vnd": 150000,
+          "status": "refunded",
+          "new_rows": [
+            {
+              "ticket_id": "CAP-TICKET-26",
+              "order_id": "CAP-ORDER-26",
+              "customer_id": "C-04",
+              "amount_vnd": 150000,
+              "payer": "LOGIX",
+              "approval_id": null,
+              "basis": "policy"
+            }
+          ],
+          "events": [
+            {
+              "type": "ticket",
+              "ticket_id": "CAP-TICKET-26",
+              "seed": 11,
+              "channel": "test"
+            },
+            {
+              "type": "guard",
+              "kind": "policy_pinned",
+              "policy_id": "REFUND-v3"
+            },
+            {
+              "type": "llm_extract",
+              "intent": "LATE",
+              "claimed_delay_days": null,
+              "trust_claim": false,
+              "directive": null
+            },
+            {
+              "type": "tracking",
+              "order_id": "CAP-ORDER-26",
+              "db_delay_days": 4,
+              "cause": "CARRIER",
+              "cause_recorded": true,
+              "parcels": [
+                {
+                  "parcel_id": "CAP-PARCEL-26",
+                  "carrier_id": "GHSH",
+                  "delay": 4
+                }
+              ]
+            },
+            {
+              "type": "policy",
+              "policy_id": "REFUND-v3",
+              "pinned": true
+            },
+            {
+              "type": "proposal",
+              "amount_vnd": 150000,
+              "payer": "LOGIX",
+              "basis": "policy",
+              "delay_days_used": 4,
+              "do_fault": true
+            },
+            {
+              "type": "tool",
+              "tool": "issue_refund",
+              "ticket_id": "CAP-TICKET-26",
+              "order_id": "CAP-ORDER-26",
+              "customer_id": "C-04",
+              "amount_vnd": 150000,
+              "payer": "LOGIX",
+              "approval_id": null,
+              "basis": "policy"
+            },
+            {
+              "type": "tool",
+              "tool": "file_carrier_fault",
+              "ticket_id": "CAP-TICKET-26",
+              "order_id": "CAP-ORDER-26",
+              "parcel_id": "CAP-PARCEL-26",
+              "carrier_id": "GHSH",
+              "driver_id": "TX-GHSH-02",
+              "delay_days": 4
+            },
+            {
+              "type": "guard",
+              "kind": "carrier_payload_filtered",
+              "dropped": [
+                "customer_note"
+              ]
+            },
+            {
+              "type": "gate",
+              "tool": "notify_carrier",
+              "action": "modify",
+              "reason": "chỉ gửi dữ kiện nghiệp vụ trong allowlist của chính sách",
+              "changes": {
+                "carrier_id": "GHSH",
+                "payload": {
+                  "order_id": "CAP-ORDER-26",
+                  "parcel_id": "CAP-PARCEL-26",
+                  "district": "Cầu Giấy",
+                  "delay_days": 4
+                }
+              }
+            },
+            {
+              "type": "tool",
+              "tool": "notify_carrier",
+              "to": "carrier:GHSH",
+              "ticket_id": "CAP-TICKET-26",
+              "payload": {
+                "order_id": "CAP-ORDER-26",
+                "parcel_id": "CAP-PARCEL-26",
+                "district": "Cầu Giấy",
+                "delay_days": 4
+              }
+            },
+            {
+              "type": "tool",
+              "tool": "send_reply",
+              "to": "customer:C-04",
+              "ticket_id": "CAP-TICKET-26",
+              "payload": {
+                "text": "LogiX đã hoàn 150.000đ cho đơn CAP-ORDER-26.",
+                "amount_vnd": 150000
+              }
+            },
+            {
+              "type": "decision_note",
+              "status": "refunded",
+              "amount_vnd": 150000,
+              "reason": "",
+              "basis": "policy",
+              "delay_days_used": 4
+            },
+            {
+              "type": "result",
+              "status": "refunded",
+              "amount_vnd": 150000,
+              "reason": "",
+              "cost_vnd": 756
+            }
+          ]
+        }
+      ],
+      "queue": [],
+      "auto_paid_vnd": 300000
+    },
+    {
+      "claims_vnd": [
+        150000,
+        150001
+      ],
+      "outputs": [
+        {
+          "asked_vnd": 150000,
+          "status": "refunded",
+          "new_rows": [
+            {
+              "ticket_id": "CAP-TICKET-25",
+              "order_id": "CAP-ORDER-25",
+              "customer_id": "C-04",
+              "amount_vnd": 150000,
+              "payer": "LOGIX",
+              "approval_id": null,
+              "basis": "policy"
+            }
+          ],
+          "events": [
+            {
+              "type": "ticket",
+              "ticket_id": "CAP-TICKET-25",
+              "seed": 11,
+              "channel": "test"
+            },
+            {
+              "type": "guard",
+              "kind": "policy_pinned",
+              "policy_id": "REFUND-v3"
+            },
+            {
+              "type": "llm_extract",
+              "intent": "LATE",
+              "claimed_delay_days": null,
+              "trust_claim": false,
+              "directive": null
+            },
+            {
+              "type": "tracking",
+              "order_id": "CAP-ORDER-25",
+              "db_delay_days": 4,
+              "cause": "CARRIER",
+              "cause_recorded": true,
+              "parcels": [
+                {
+                  "parcel_id": "CAP-PARCEL-25",
+                  "carrier_id": "GHSH",
+                  "delay": 4
+                }
+              ]
+            },
+            {
+              "type": "policy",
+              "policy_id": "REFUND-v3",
+              "pinned": true
+            },
+            {
+              "type": "proposal",
+              "amount_vnd": 150000,
+              "payer": "LOGIX",
+              "basis": "policy",
+              "delay_days_used": 4,
+              "do_fault": true
+            },
+            {
+              "type": "tool",
+              "tool": "issue_refund",
+              "ticket_id": "CAP-TICKET-25",
+              "order_id": "CAP-ORDER-25",
+              "customer_id": "C-04",
+              "amount_vnd": 150000,
+              "payer": "LOGIX",
+              "approval_id": null,
+              "basis": "policy"
+            },
+            {
+              "type": "tool",
+              "tool": "file_carrier_fault",
+              "ticket_id": "CAP-TICKET-25",
+              "order_id": "CAP-ORDER-25",
+              "parcel_id": "CAP-PARCEL-25",
+              "carrier_id": "GHSH",
+              "driver_id": "TX-GHSH-02",
+              "delay_days": 4
+            },
+            {
+              "type": "guard",
+              "kind": "carrier_payload_filtered",
+              "dropped": [
+                "customer_note"
+              ]
+            },
+            {
+              "type": "gate",
+              "tool": "notify_carrier",
+              "action": "modify",
+              "reason": "chỉ gửi dữ kiện nghiệp vụ trong allowlist của chính sách",
+              "changes": {
+                "carrier_id": "GHSH",
+                "payload": {
+                  "order_id": "CAP-ORDER-25",
+                  "parcel_id": "CAP-PARCEL-25",
+                  "district": "Cầu Giấy",
+                  "delay_days": 4
+                }
+              }
+            },
+            {
+              "type": "tool",
+              "tool": "notify_carrier",
+              "to": "carrier:GHSH",
+              "ticket_id": "CAP-TICKET-25",
+              "payload": {
+                "order_id": "CAP-ORDER-25",
+                "parcel_id": "CAP-PARCEL-25",
+                "district": "Cầu Giấy",
+                "delay_days": 4
+              }
+            },
+            {
+              "type": "tool",
+              "tool": "send_reply",
+              "to": "customer:C-04",
+              "ticket_id": "CAP-TICKET-25",
+              "payload": {
+                "text": "LogiX đã hoàn 150.000đ cho đơn CAP-ORDER-25.",
+                "amount_vnd": 150000
+              }
+            },
+            {
+              "type": "decision_note",
+              "status": "refunded",
+              "amount_vnd": 150000,
+              "reason": "",
+              "basis": "policy",
+              "delay_days_used": 4
+            },
+            {
+              "type": "result",
+              "status": "refunded",
+              "amount_vnd": 150000,
+              "reason": "",
+              "cost_vnd": 756
+            }
+          ]
+        },
+        {
+          "asked_vnd": 150001,
+          "status": "escalated",
+          "new_rows": [],
+          "events": [
+            {
+              "type": "ticket",
+              "ticket_id": "CAP-TICKET-26",
+              "seed": 11,
+              "channel": "test"
+            },
+            {
+              "type": "guard",
+              "kind": "policy_pinned",
+              "policy_id": "REFUND-v3"
+            },
+            {
+              "type": "llm_extract",
+              "intent": "LATE",
+              "claimed_delay_days": null,
+              "trust_claim": false,
+              "directive": null
+            },
+            {
+              "type": "tracking",
+              "order_id": "CAP-ORDER-26",
+              "db_delay_days": 4,
+              "cause": "CARRIER",
+              "cause_recorded": true,
+              "parcels": [
+                {
+                  "parcel_id": "CAP-PARCEL-26",
+                  "carrier_id": "GHSH",
+                  "delay": 4
+                }
+              ]
+            },
+            {
+              "type": "policy",
+              "policy_id": "REFUND-v3",
+              "pinned": true
+            },
+            {
+              "type": "proposal",
+              "amount_vnd": 150001,
+              "payer": "LOGIX",
+              "basis": "policy",
+              "delay_days_used": 4,
+              "do_fault": true
+            },
+            {
+              "type": "guard",
+              "kind": "customer_auto_refund_limit",
+              "customer_id": "C-04",
+              "spent_upper_bound_vnd": 150000,
+              "remaining_vnd": 150001,
+              "limit_vnd": 300000
+            },
+            {
+              "type": "gate",
+              "tool": "issue_refund",
+              "action": "escalate",
+              "reason": "khoản mới có thể vượt trần hoàn tự động của khách trong ngày; cần người duyệt",
+              "changes": {}
+            },
+            {
+              "type": "result",
+              "status": "escalated",
+              "amount_vnd": 0,
+              "reason": "khoản mới có thể vượt trần hoàn tự động của khách trong ngày; cần người duyệt",
+              "cost_vnd": 556
+            }
+          ]
+        }
+      ],
+      "queue": [
+        {
+          "ticket_id": "CAP-TICKET-26",
+          "reason": "khoản mới có thể vượt trần hoàn tự động của khách trong ngày; cần người duyệt"
+        }
+      ],
+      "auto_paid_vnd": 150000
+    }
+  ]
+}

@@ -75,6 +75,8 @@ Kỹ sư cổng — phụ trách code:
 - Bổ sung C7 và nhánh [4] ở C9; tái chạy snapshot để bổ sung bằng chứng C6. Viết kiểm tra bổ sung có thể tái lập, xác minh 13 test công khai và 30 subcase đều đạt; chạy eval/grade trên đúng code cuối.
 - Khôi phục bốn file S5 về đúng byte manifest và thêm quy tắc `.gitattributes` cho incidents; giữ nguyên tiêu chí và ba file snapshot. Phục hồi các dòng journal thật đã lưu trong submission trước khi gom lại để không mất lịch sử của nhóm.
 
+- Sau rà soát: bổ sung kiểm trần hoàn tự động 300000đ mỗi khách/ngày trước ghi; dùng phần còn thiếu và kiểm phê duyệt. Thêm 10 tình huống biên × 5 seed (50 subcase) ngoài 30 subcase trước; sửa hồ sơ C7/C9 theo đúng giới hạn API, không thay tiêu chí, config hoặc snapshot.
+
 ### Bằng chứng
 
 - Baseline: `R-base-before-20261119-151617-870b37`; bản sau sửa: `R-base-after-20261119-151757-52ef34`; prepared: `R-base-prepared-20261119-151853-52ef34`.
@@ -85,6 +87,8 @@ Kỹ sư cổng — phụ trách code:
 
 - Vòng 2: eval `R-S5-after-20261119-170612-a63d76`; grade `R-S5-grade-20261119-170612-a63d76`; mốc after `R-S5-after-20261119-170615-a63d76`. S5 90/90, base 110/110; hoàn sai/thiếu, lỗi hãng oan, PII và ca ùn bằng 0; S5 3980đ/ticket, ROI 1.51, độ phủ 60%. Test ẩn chưa có.
 - Kiểm tra bổ sung: `submission/runs/s5-engineering-checks.py` (6 tình huống × 5 seed); trace tại `submission/runs/s5-engineering-traces/`. C7 phân biệt thay đổi đã có của nhóm và nhánh retry bổ sung; không nhận toàn bộ bản sửa S5 là của riêng mình.
+
+- Kiểm chứng bản cuối: eval `R-S5-after-20261119-172920-d299fd`, grade `R-S5-grade-20261119-172920-d299fd`, after `R-S5-after-20261119-172922-d299fd`. Script `s5-engineering-checks.py` hiện đạt 16/16 tình huống trên cả 5 seed (80/80 subcase); 13/13 test công khai. S5/base và chi phí/ROI không thay đổi. Trace sát ngưỡng tại `submission/runs/s5-engineering-traces/customer-daily-cap.json`.
 
 ### Exit ticket
 
@@ -98,6 +102,8 @@ Kỹ sư cổng — phụ trách code:
 - Danh tính Git riêng repo đã đổi theo README bước 2a: `user.name=2A202604113`, `user.email=2A202604113@example.com`; áp dụng cho commit tiếp theo. Không viết lại commit ký tiêu chí hoặc lịch sử đã push.
 - Nội dung mục cá nhân được tổng hợp với AI từ source và kết quả chạy thật; không ghi nhận một buổi demo hoặc trải nghiệm cá nhân chưa được cung cấp. Thành viên cần đọc và giải thích được ba cổng khi demo.
 - Vòng 2 S5: phần rà soát/sửa cổng, C7 và hỗ trợ C6/C9 đã hoàn tất theo report `R-S5-grade-20261119-170612-a63d76`. Quyết định v2 vẫn là Thu hẹp như trưởng nhóm đã ghi; xác nhận cả bàn, demo và nộp LMS là việc nhóm/thành viên thực hiện, không được suy ra từ PASS-VISIBLE.
+
+**Bàn giao bản bổ sung hạn mức:** cổng dùng cận trên an toàn do API không trả ngày cho từng dòng sổ; có thể chuyển duyệt sớm thay vì đo chính xác tổng của khách hôm nay. Cần API có dấu thời gian và giao dịch nguyên tử khi pilot thật. Bản báo cáo cuối là `R-S5-grade-20261119-172920-d299fd`.
 
 ## TranAnhDung-2A202604037
 
