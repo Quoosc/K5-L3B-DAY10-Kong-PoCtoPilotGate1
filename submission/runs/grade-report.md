@@ -2,10 +2,10 @@
 
 *Đây là kết quả TỰ KIỂM TRA của bàn, không phải điểm. Bài được một team chấm tự động chấm lại sau buổi học.*
 
-- Mã lần chạy: `R-S5-grade-20261119-163938-6fd3ce` · bàn: `K5-L3B-DAY10-Kong-PoCtoPilotGate1` · grader `lab10-1.0` · 1.28s
-- Ba mốc: base `R-S5-before-20261119-163939-6fd3ce` · prepared `R-S5-prepared-20261119-163939-6fd3ce` · after `R-S5-after-20261119-163939-6fd3ce` (report + trace trong runs/)
+- Mã lần chạy: `R-S5-grade-20261119-164317-a4ba0f` · bàn: `K5-L3B-DAY10-Kong-PoCtoPilotGate1` · grader `lab10-1.0` · 1.307s
+- Ba mốc: base `R-S5-before-20261119-164318-a4ba0f` · prepared `R-S5-prepared-20261119-164318-a4ba0f` · after `R-S5-after-20261119-164319-a4ba0f` (report + trace trong runs/)
 - Mốc prepared (cổng vòng 1): đã chốt `ca556bb9`, còn nguyên
-- Hash code đội (guards + monitors + switches + cổng vận hành): `6fd3cefb7631`
+- Hash code đội (guards + monitors + switches + cổng vận hành): `a4ba0f769c42`
 - Hash Bản tiêu chí chấp nhận: `0f2b62d6a8fe` · đã ký: `0f2b62d6a8fe` · KHÔNG ĐỔI
 - Thẻ đang kiểm: `S5` · dòng "Thẻ đã bốc" bàn ghi trong phiếu: S5 · khớp
 
@@ -16,7 +16,7 @@
 | 3 visible | ✅ | base có vấn đề: True; after sạch: True; ticket còn hỏng: không; trần còn vượt: không |
 | 4 hidden | — | máy này không có bài kiểm tra ẩn (team chấm sẽ chạy sau buổi học) |
 | 5 regression | ✅ | bộ nền pass_rate 0.9909 → 1.0; ca mới hỏng: không |
-| 6 monitor | ✅ | metric mới: ['max_warehouse_variable_cost_vnd']; sáng đèn: [('max_warehouse_variable_cost_vnd', 'before', 4586.4, 11325.666667), ('max_warehouse_variable_cost_vnd', 'after', 4646.4, 4276.75)] |
+| 6 monitor | ✅ | metric mới: ['max_warehouse_variable_cost_vnd', 'max_warehouse_cost_per_ticket_vnd', 'llm_over_budget_rate', 'duplicate_order_attempt_rate']; sáng đèn: [('max_warehouse_variable_cost_vnd', 'before', 4586.4, 11325.666667), ('max_warehouse_variable_cost_vnd', 'after', 4646.4, 4276.75), ('max_warehouse_cost_per_ticket_vnd', 'before', 4586.4, 20262.6), ('max_warehouse_cost_per_ticket_vnd', 'after', 4646.4, 4276.75), ('llm_over_budget_rate', 'before', 0.0, 0.3), ('llm_over_budget_rate', 'after', 0.0, 0.166667), ('duplicate_order_attempt_rate', 'before', 0.0, 0.1), ('duplicate_order_attempt_rate', 'after', 0.0, 0.222222)] |
 
 **Kinh doanh · vận hành · pháp lý trên gói sự cố bàn nhìn thấy** (tiền tính cho một ngày giả lập)
 

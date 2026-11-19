@@ -1,8 +1,8 @@
 {
- "run_id": "R-S5-grade-20261119-163938-6fd3ce",
+ "run_id": "R-S5-grade-20261119-164317-a4ba0f",
  "incident": "S5",
  "grader_version": "lab10-1.0",
- "code_hash": "6fd3cefb76319994a2b4903198fe6e72822a81e59c5681e5a269f91e0114d940",
+ "code_hash": "a4ba0f769c4286148df5b261bfefef374bdf2e0af43227eb1d3371567e01e93f",
  "integrity": {
   "ok": true,
   "changed": [],
@@ -137,8 +137,11 @@
     "violations": []
    },
    "monitors": {
+    "max_warehouse_variable_cost_vnd": 4586.4,
     "escalation_rate": 0.227273,
-    "max_warehouse_variable_cost_vnd": 4586.4
+    "max_warehouse_cost_per_ticket_vnd": 4586.4,
+    "llm_over_budget_rate": 0.0,
+    "duplicate_order_attempt_rate": 0.0
    },
    "by_segment": {
     "warehouse": [
@@ -378,8 +381,11 @@
     ]
    },
    "monitors": {
+    "max_warehouse_variable_cost_vnd": 11325.666667,
     "escalation_rate": 0.4,
-    "max_warehouse_variable_cost_vnd": 11325.666667
+    "max_warehouse_cost_per_ticket_vnd": 20262.6,
+    "llm_over_budget_rate": 0.3,
+    "duplicate_order_attempt_rate": 0.1
    },
    "by_segment": {
     "warehouse": [
@@ -584,8 +590,11 @@
     "violations": []
    },
    "monitors": {
+    "max_warehouse_variable_cost_vnd": 4646.4,
     "escalation_rate": 0.227273,
-    "max_warehouse_variable_cost_vnd": 4646.4
+    "max_warehouse_cost_per_ticket_vnd": 4646.4,
+    "llm_over_budget_rate": 0.0,
+    "duplicate_order_attempt_rate": 0.0
    },
    "by_segment": {
     "warehouse": [
@@ -804,8 +813,11 @@
     ]
    },
    "monitors": {
+    "max_warehouse_variable_cost_vnd": 10382.25,
     "escalation_rate": 0.5,
-    "max_warehouse_variable_cost_vnd": 10382.25
+    "max_warehouse_cost_per_ticket_vnd": 10382.25,
+    "llm_over_budget_rate": 0.3,
+    "duplicate_order_attempt_rate": 0.166667
    },
    "by_segment": {
     "warehouse": [
@@ -1010,8 +1022,11 @@
     "violations": []
    },
    "monitors": {
+    "max_warehouse_variable_cost_vnd": 4646.4,
     "escalation_rate": 0.227273,
-    "max_warehouse_variable_cost_vnd": 4646.4
+    "max_warehouse_cost_per_ticket_vnd": 4646.4,
+    "llm_over_budget_rate": 0.0,
+    "duplicate_order_attempt_rate": 0.0
    },
    "by_segment": {
     "warehouse": [
@@ -1216,8 +1231,11 @@
     "violations": []
    },
    "monitors": {
+    "max_warehouse_variable_cost_vnd": 4276.75,
     "escalation_rate": 0.166667,
-    "max_warehouse_variable_cost_vnd": 4276.75
+    "max_warehouse_cost_per_ticket_vnd": 4276.75,
+    "llm_over_budget_rate": 0.166667,
+    "duplicate_order_attempt_rate": 0.222222
    },
    "by_segment": {
     "warehouse": [
@@ -1335,9 +1353,9 @@
   }
  },
  "run_ids": {
-  "before": "R-S5-before-20261119-163939-6fd3ce",
-  "prepared": "R-S5-prepared-20261119-163939-6fd3ce",
-  "after": "R-S5-after-20261119-163939-6fd3ce"
+  "before": "R-S5-before-20261119-164318-a4ba0f",
+  "prepared": "R-S5-prepared-20261119-164318-a4ba0f",
+  "after": "R-S5-after-20261119-164319-a4ba0f"
  },
  "visible": {
   "before_red": true,
@@ -1359,7 +1377,10 @@
  "monitor": {
   "ok": true,
   "new": [
-   "max_warehouse_variable_cost_vnd"
+   "max_warehouse_variable_cost_vnd",
+   "max_warehouse_cost_per_ticket_vnd",
+   "llm_over_budget_rate",
+   "duplicate_order_attempt_rate"
   ],
   "lit": [
    {
@@ -1373,6 +1394,42 @@
     "stage": "after",
     "base": 4646.4,
     "incident": 4276.75
+   },
+   {
+    "name": "max_warehouse_cost_per_ticket_vnd",
+    "stage": "before",
+    "base": 4586.4,
+    "incident": 20262.6
+   },
+   {
+    "name": "max_warehouse_cost_per_ticket_vnd",
+    "stage": "after",
+    "base": 4646.4,
+    "incident": 4276.75
+   },
+   {
+    "name": "llm_over_budget_rate",
+    "stage": "before",
+    "base": 0.0,
+    "incident": 0.3
+   },
+   {
+    "name": "llm_over_budget_rate",
+    "stage": "after",
+    "base": 0.0,
+    "incident": 0.166667
+   },
+   {
+    "name": "duplicate_order_attempt_rate",
+    "stage": "before",
+    "base": 0.0,
+    "incident": 0.1
+   },
+   {
+    "name": "duplicate_order_attempt_rate",
+    "stage": "after",
+    "base": 0.0,
+    "incident": 0.222222
    }
   ],
   "errors": []
@@ -1401,5 +1458,5 @@
  "hard_gates_ok": true,
  "score": null,
  "verdict": "PASS-VISIBLE (chưa chạy test ẩn)",
- "seconds": 1.28
+ "seconds": 1.307
 }
