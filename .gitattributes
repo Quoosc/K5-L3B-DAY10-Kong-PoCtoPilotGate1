@@ -7,4 +7,5 @@
 /config/operating_gates.round1.json -text whitespace=cr-at-eol
 /TEAM.md text eol=lf
 /templates/*.md text eol=lf
-/submission/** -text
+/submission/** -text whitespace=cr-at-eol
+/incidents/** -text

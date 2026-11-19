@@ -71,6 +71,10 @@ Kỹ sư cổng — phụ trách code:
 - Khôi phục byte LF đúng hash gốc trên máy; thêm `.gitattributes` giữ nguyên byte các file bị hash khi chuyển hệ điều hành; không sửa/ngụy tạo chữ ký tiêu chí.
 - Đã dùng trợ lý AI Codex để đọc source, viết cổng, chạy kiểm tra và tổng hợp bằng chứng/câu chữ. Thành viên cần tự đọc, giải thích và xác nhận kết quả khi demo.
 
+- Vòng 2 S5: rà soát bản sửa hoàn phần còn thiếu đã có ở `a2d997c`; kiểm chứng ledger cho hoàn trước đầy đủ, hoàn một phần, yêu cầu lặp và đơn khác cùng khách. Sửa bổ sung nhánh phản hồi sau confirm retry để không báo nhầm 0đ khi ticket đã ghi tiền thành công.
+- Bổ sung C7 và nhánh [4] ở C9; tái chạy snapshot để bổ sung bằng chứng C6. Viết kiểm tra bổ sung có thể tái lập, xác minh 13 test công khai và 30 subcase đều đạt; chạy eval/grade trên đúng code cuối.
+- Khôi phục bốn file S5 về đúng byte manifest và thêm quy tắc `.gitattributes` cho incidents; giữ nguyên tiêu chí và ba file snapshot. Phục hồi các dòng journal thật đã lưu trong submission trước khi gom lại để không mất lịch sử của nhóm.
+
 ### Bằng chứng
 
 - Baseline: `R-base-before-20261119-151617-870b37`; bản sau sửa: `R-base-after-20261119-151757-52ef34`; prepared: `R-base-prepared-20261119-151853-52ef34`.
@@ -79,17 +83,21 @@ Kỹ sư cổng — phụ trách code:
 - Phiếu B: B0, phần kỹ thuật B4/B6, B7.1–B7.3 và các dòng bằng chứng B8. Report/journal và trace tự viết được lưu thêm ở `submission/runs/` để không mất do `/runs/` bị gitignore.
 - Commit triển khai: `cca0cfb` (`LAB 10: chốt cổng vòng 1 - phần kỹ thuật`); đồng bộ bằng chứng nhóm tại `d8568da`. Commit `984e794` đã ghi quyết định v1 **Tiếp tục** và PIC trong B8; `c75e16e` đã đồng bộ MSSV thành viên. Đây là đối chiếu lịch sử, không thay đổi quyết định v1.
 
+- Vòng 2: eval `R-S5-after-20261119-170612-a63d76`; grade `R-S5-grade-20261119-170612-a63d76`; mốc after `R-S5-after-20261119-170615-a63d76`. S5 90/90, base 110/110; hoàn sai/thiếu, lỗi hãng oan, PII và ca ùn bằng 0; S5 3980đ/ticket, ROI 1.51, độ phủ 60%. Test ẩn chưa có.
+- Kiểm tra bổ sung: `submission/runs/s5-engineering-checks.py` (6 tình huống × 5 seed); trace tại `submission/runs/s5-engineering-traces/`. C7 phân biệt thay đổi đã có của nhóm và nhánh retry bổ sung; không nhận toàn bộ bản sửa S5 là của riêng mình.
+
 ### Exit ticket
 
 - **Một điều học được từ kết quả kiểm chứng:** Cổng phải đối chiếu tracking/chính sách ngay trước thao tác ghi tiền; nếu đợi tới bước ghi lỗi hãng mới chuyển người thì tiền có thể đã ra khỏi sổ. Với `T-002@55`, chặn đề xuất không khớp DB giúp tiền hoàn sai và lỗi hãng oan từ 20000đ/1 về 0/0 mà không làm hỏng 109 lần chạy vốn đúng.
+- **Bổ sung từ S5:** Chống hoàn lặp cần xét phần còn thiếu thay vì từ chối mọi đơn đã có sổ. Ngoài chặn ghi hai lần, phải kiểm cả tin nhắn sau retry: số tiền phản hồi phải khớp khoản đã ghi của chính ticket, không cộng nhầm khoản hoàn thủ công trước đó.
 - **Một điều còn cần kiểm chứng:** Kết quả 110/110 trên bộ nền mock chưa bảo đảm tracking DB đúng ngoài đời, cũng chưa chứng minh cổng giữ được chi phí và SLA khi tải tăng hoặc chính sách đổi. Cần kiểm tiếp trên đúng thẻ được phát ở vòng 2 và đo lại trong pilot thật.
 
 ### Trạng thái bàn giao
 
-- Vòng 1 của vai phụ trách code: đã viết cổng, liên kết rủi ro, thử ticket hiểm, kiểm regression, chốt snapshot và lưu bằng chứng. Bản hiện tại của `guards.py` vẫn trùng byte với `guards_round1.py`.
+- Vòng 1 của vai phụ trách code: đã viết cổng, liên kết rủi ro, thử ticket hiểm, kiểm regression, chốt snapshot và lưu bằng chứng. Bản vòng 1 được giữ nguyên; `guards.py` hiện có sửa vòng 2 và được đo riêng ở mốc after.
 - Danh tính Git riêng repo đã đổi theo README bước 2a: `user.name=2A202604113`, `user.email=2A202604113@example.com`; áp dụng cho commit tiếp theo. Không viết lại commit ký tiêu chí hoặc lịch sử đã push.
 - Nội dung mục cá nhân được tổng hợp với AI từ source và kết quả chạy thật; không ghi nhận một buổi demo hoặc trải nghiệm cá nhân chưa được cung cấp. Thành viên cần đọc và giải thích được ba cổng khi demo.
-- Vòng 2 chưa thực hiện: repo chưa có số thẻ/gói sự cố. Khi nhận thẻ, phối hợp chạy grade trước sửa; sau đó mới sửa `guards.py`, ghi C7 và hỗ trợ fault tree C6/C9. Không sửa ba file snapshot hoặc tiêu chí đã ký.
+- Vòng 2 S5: phần rà soát/sửa cổng, C7 và hỗ trợ C6/C9 đã hoàn tất theo report `R-S5-grade-20261119-170612-a63d76`. Quyết định v2 vẫn là Thu hẹp như trưởng nhóm đã ghi; xác nhận cả bàn, demo và nộp LMS là việc nhóm/thành viên thực hiện, không được suy ra từ PASS-VISIBLE.
 
 ## TranAnhDung-2A202604037
 

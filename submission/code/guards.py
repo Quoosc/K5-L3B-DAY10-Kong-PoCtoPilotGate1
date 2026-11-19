@@ -50,6 +50,16 @@ def write_gate(ctx, action):
     ):
         order = ctx.tools.lookup_order(ctx.ticket.get("order_id"))
         if order and action.get("customer_id") == order.get("customer_id"):
+            # A failed confirmation can retry a write that ALREADY succeeded.
+            # Count this ticket's actual writes, not earlier manual refunds.
+            paid_now = sum(row["amount_vnd"] for row in ctx.tools.ledger_rows(
+                order_id=order["order_id"], ticket_id=ctx.ticket["ticket_id"]))
+            if paid_now > 0:
+                return Verdict.modify(
+                    "phản hồi đúng khoản đã ghi khi xác nhận bị retry",
+                    text=f"LogiX đã hoàn {paid_now:,}đ cho đơn {order['order_id']}.".replace(",", "."),
+                    amount_vnd=paid_now,
+                )
             return Verdict.modify(
                 "giải thích khoản hoàn đã ghi trước đó",
                 text="Sổ đã ghi nhận khoản hoàn trước đó cho đơn này. Vui lòng liên hệ CSKH nếu cần đối soát.",

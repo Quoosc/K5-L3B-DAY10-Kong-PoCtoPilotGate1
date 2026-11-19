@@ -34,6 +34,8 @@ Mỗi lệnh `lab10.eval` và `lab10.grade` tự ghi một dòng vào `runs/jour
 | 2 | R-S5-after-20261119-163605-4408a8 | S5 · after | thu hẹp phạm vi | 0,9444 [0,8333; 1] | 0,9444 | 0 · 0 · 0 | 0,1667 | Giảm chi phí; S5-21 còn thiếu. |
 | 3 | R-S5-after-20261119-164718-5b399f | S5 · after | sửa hoàn phần còn thiếu và thêm monitor | 1 [1; 1] | 1 | 0 · 0 · 0 | 0,1667 | Visible đạt; kiểm thử ẩn chưa có. |
 | 4 | R-S5-grade-20261119-164717-5b399f | base · after | grade kiểm regression | 1 [1; 1] | 1 | 0 · 0 · 0 | 0,2273 | Không có ca nền mới hỏng. |
+| 5 | R-S5-after-20261119-170612-a63d76 | S5 · after | Chỉ sửa phản hồi sau confirm retry: dùng tiền đã ghi của chính ticket | 1 [1; 1] | 1 | 0 · 0 · 0 | 0,1667 | 90/90 đạt; không đổi phạm vi hay config |
+| 6 | R-S5-grade-20261119-170612-a63d76 | S5 và base · ba mốc | Kiểm lại đúng code sau sửa nhánh retry | S5 1 [1; 1]; base 1 [1; 1] | 1 | 0 · 0 · 0 | S5 0,1667; base 0,2273 | PASS-VISIBLE; integrity/criteria/regression/monitor đạt, chưa có test ẩn |
 
 ---
 
@@ -281,9 +283,11 @@ Vì sao có thể sai: sổ đối soát có thể đồng bộ trễ hoặc nh�
 
 <a id="c6"></a>
 
-## C6 · Câu 3.4 · Fault tree TRƯỚC khi sửa (mã lần chạy: `R-S5-prepared-20261119-163558-35fc09`)
+## C6 · Câu 3.4 · Fault tree TRƯỚC khi sửa (mã lần chạy: `R-S5-prepared-20261119-170614-a63d76`)
 
-**Cây trước sửa, prepared `R-S5-prepared-20261119-163558-35fc09`:** Đỉnh CFO chịu chi phí cao hoặc thất thoát/khách hoàn thiếu. HOẶC (1) sổ đã có khoản mà gate không phân biệt hoàn một phần: S5-21@11, hành động, spec phải hoàn phần còn lại; HOẶC (2) ticket sỉ vẫn đọc LLM rồi chuyển người: S5-51@11, vận hành, spec theo dõi chi phí mỗi kho; HOẶC (3) nội dung dài làm vượt ngân sách: S5-50@11 base 1.856đ, kinh doanh. Giả định có thể sai: sổ đồng bộ đầy đủ, phân loại kho ổn định, chi phí duyệt không thay đổi.
+**Cây trước sửa, prepared `R-S5-prepared-20261119-170614-a63d76`:** Đỉnh CFO chịu chi phí cao hoặc thất thoát/khách hoàn thiếu. HOẶC (1) sổ đã có khoản mà gate không phân biệt hoàn một phần: S5-21@11, hành động, spec phải hoàn phần còn lại; HOẶC (2) ticket sỉ vẫn đọc LLM rồi chuyển người: S5-51@11, vận hành, spec theo dõi chi phí mỗi kho; HOẶC (3) nội dung dài làm vượt ngân sách: S5-50@11 base 1.856đ, kinh doanh. Giả định có thể sai: sổ đồng bộ đầy đủ, phân loại kho ổn định, chi phí duyệt không thay đổi.
+
+**Đối chiếu của Kỹ sư cổng:** mã trên là lần tái chạy đúng snapshot prepared `ca556bb9` sau khi nhận S5, không phải tạo lại checkpoint hoặc sửa lịch sử. Trace `submission/runs/s5-engineering-traces/S5-21-11-prepared.txt` cho thấy proposal 22000đ, gate từ chối do đã có 10000đ trong ledger, nên còn thiếu 12000đ. Nhánh chi phí kho sỉ và nội dung dài giữ các bằng chứng đã phân tích ở trên.
 
 **Khung tư duy.** Đi từ **tác hại** ngược về nguyên nhân, không đi từ lỗi mình tình cờ thấy. Mỗi tầng hỏi "điều gì phải xảy
 ra thì điều trên mới xảy ra", nối bằng **HOẶC** (một trong các nhánh là đủ) hoặc **VÀ** (phải đồng thời). Một biện pháp tốt
@@ -347,6 +351,16 @@ python3 -m lab10.grade --incident Sx
 
 ---
 
+**Bổ sung của Nguyễn Quốc Quang Anh sau rà soát code vòng 2:** Bản sửa hoàn phần còn thiếu đã có trong repo tại `a2d997c`; không nhận phần đó là thay đổi mới của lần rà soát này. Đã kiểm chứng S5-21 after chỉ ghi 12000đ, tổng cả khoản cũ là 22000đ; S5-20 và S5-02 không ghi thêm tiền. Giữ nguyên các cổng vòng 1 và snapshot, không sửa config/phạm vi hay monitor của thành viên khác.
+
+| Nhánh bổ sung | Nguyên nhân và bằng chứng | Chỗ sửa | GIẢM / NGĂN và giới hạn | Kiểm chứng |
+|---|---|---|---|---|
+| [4] Sai thông báo sau retry | Khi confirm bị 429 sau lần ghi thành công, lần ghi lại bị chặn nhưng nhánh send_reply cũ luôn báo amount_vnd=0. Tái hiện trên fixture T-001 (đã ghi 25000đ) và S5-21 (đã ghi 12000đ) với lỗi confirm tiêm trong bộ nhớ. | `write_gate`, nhánh send_reply: cộng ledger theo đúng order_id và ticket_id hiện tại; có khoản đã ghi thì phản hồi đúng số đó, nếu không thì giữ thông báo khoản hoàn trước đây và số tiền 0. | Ngăn sai lệch số tiền thông báo trong hai kịch bản retry đã kiểm. Không bảo đảm sổ ngoài hệ thống đã đồng bộ hoặc giao dịch đồng thời có khóa nguyên tử. | 6 kiểm tra bổ sung × 5 seed đều đạt; 13 test công khai đạt; R-S5-after-20261119-170612-a63d76 và grade R-S5-grade-20261119-170612-a63d76. |
+
+Lệnh tái lập: `python -X utf8 -B submission/runs/s5-engineering-checks.py`. Script chỉ đổi World trong bộ nhớ, không sửa dữ liệu khóa; các ID là fixture kiểm thử, không phải nhánh đặc cách trong guard. Trước sửa: 10 subcase retry sai số tiền; sau sửa: 30/30 subcase đạt. Trace tiêm lỗi được ghi rõ là bổ sung, không gán thành kết quả của bộ S5 gốc: `submission/runs/s5-engineering-traces/retry-full.json`, `retry-partial.json`. Đây không phải test ẩn.
+
+---
+
 <a id="c8"></a>
 
 ## C8 · Câu 3.6 · Chỉ số theo dõi mới (thước đo → dữ liệu → cách tính)
@@ -371,9 +385,9 @@ Thẻ S5 dùng mục này cho một con số kinh doanh: chi phí mỗi ticket t
 
 <a id="c9"></a>
 
-## C9 · Câu 3.7 · Fault tree SAU khi sửa (mã lần chạy: `R-S5-after-20261119-164718-5b399f`)
+## C9 · Câu 3.7 · Fault tree SAU khi sửa (mã lần chạy: `R-S5-after-20261119-170615-a63d76`)
 
-**Cây after `R-S5-after-20261119-164718-5b399f`:** tác hại xảy ra nếu (1) hoàn sai VÀ gate/sổ đối chiếu hỏng; HOẶC (2) chi phí kép VÀ định tuyến phạm vi hỏng; HOẶC (3) chi phí model cao VÀ trần ngân sách hỏng. Ledger đối chiếu chặn vượt quyền lợi khi dữ liệu đầy đủ; phạm vi loại kho sỉ trong bộ thử; monitor phát hiện chi phí cao nhưng không tự chặn. Đồng bộ sổ trễ, thay đổi loại kho và chi phí ngoài mô phỏng vẫn là nhánh hở.
+**Cây after `R-S5-after-20261119-170615-a63d76`:** tác hại xảy ra nếu (1) hoàn sai VÀ gate/sổ đối chiếu hỏng; HOẶC (2) chi phí kép VÀ định tuyến phạm vi hỏng; HOẶC (3) chi phí model cao VÀ trần ngân sách hỏng. Ledger đối chiếu chặn vượt quyền lợi khi dữ liệu đầy đủ; phạm vi loại kho sỉ trong bộ thử; monitor phát hiện chi phí cao nhưng không tự chặn. Đồng bộ sổ trễ, thay đổi loại kho và chi phí ngoài mô phỏng vẫn là nhánh hở.
 
 Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [gate … hỏng]` và ghi:
 
@@ -382,7 +396,8 @@ Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [g
  └─ HOẶC
  ├─ [1] hoàn sai VÀ gate ledger hoặc dữ liệu sổ hỏng
  ├─ [2] chi phí kép VÀ định tuyến phạm vi hỏng
- └─ [3] chi phí model cao VÀ ngân sách không ngăn được (cần đo giá thực)
+ ├─ [3] chi phí model cao VÀ ngân sách không ngăn được (cần đo giá thực)
+ └─ [4] confirm lỗi sau ghi thành công VÀ cổng phản hồi không đối chiếu ledger của chính ticket
 ```
 
 | Nhánh | Gate (hàm trong `guards.py` / khoá config / metric trong `monitors.py`) | Tầng gate (phát hiện / chặn / giới hạn thiệt hại / vận hành) | Giảm hay ngăn? Vì sao | Nhánh còn hở |
@@ -390,8 +405,11 @@ Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [g
 | [1] | `write_gate` đối chiếu ledger và quyền lợi | Chặn | Ngăn vượt quyền lợi trên sổ đầy đủ | Sổ cập nhật trễ hoặc ghi ngoài hệ thống |
 | [2] | `business.pilot_scope` | Vận hành | Giảm chi phí trợ lý cho kho bị loại | Chi phí làm tay, thay đổi cơ cấu kho |
 | [3] | `cost_budget_per_ticket_vnd` và monitor | Giới hạn / phát hiện | Giảm chi phí trong mock, monitor không tự chặn | Biểu giá thực, chi phí đứng chờ |
+| [4] | `write_gate` nhánh send_reply, tổng ledger đúng ticket/đơn | Chặn sai lệch phản hồi | Khớp tiền đã ghi trong 10 subcase retry (2 loại × 5 seed); không biến khoản của ticket trước thành khoản mới | Sổ ngoài hệ thống thiếu hoặc đồng bộ trễ; cập nhật đồng thời chưa có bằng chứng khóa giao dịch |
 
 ---
+
+**Bằng chứng rà soát mới:** grade `R-S5-grade-20261119-170612-a63d76` vẫn giữ mọi ô nhìn thấy đạt; trace S5-21 prepared/after và hai trace retry bổ sung tại `submission/runs/s5-engineering-traces/`. Nhánh [4] bổ sung từ kiểm thử kỹ thuật, không khẳng định đây là triệu chứng quan sát trên thẻ gốc.
 
 <a id="c10"></a>
 
@@ -471,7 +489,7 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 |---|---|
 | Commit ký tiêu chí | `7448a88` |
 | Hash chốt cổng vòng 1 | `ca556bb9` |
-| Mã lần chạy dùng làm bằng chứng | S5 base: `R-S5-before-20261119-164718-5b399f` · prepared: `R-S5-prepared-20261119-164718-5b399f` · after: `R-S5-after-20261119-164718-5b399f` |
+| Mã lần chạy dùng làm bằng chứng | S5 base: `R-S5-before-20261119-170614-a63d76` · prepared: `R-S5-prepared-20261119-170614-a63d76` · after: `R-S5-after-20261119-170615-a63d76` |
 | Vượt trần | After không còn dòng vượt trần; mọi ngưỡng đã ký đạt trên bộ thử. |
 | Kho xấu nhất | Prepared HCM-B2B 10.382đ/ticket > 10.000đ làm tay; nếu xét phân khúc này, chuyển làm tay và không mở rộng. |
 | Quyết định | **Thu hẹp**, trưởng nhóm xác nhận; chờ ghi nhận của cả bàn. |
@@ -486,7 +504,7 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 
 **Chỉ ở v2**
 - Đề xuất đổi từ Tiếp tục sang Thu hẹp do chi phí S5 toàn phạm vi 6.538đ/ticket ở prepared và HCM-B2B 10.382đ/ticket.
-- Report `R-S5-grade-20261119-164717-5b399f`: PASS-VISIBLE; test ẩn chưa có.
+- Report `R-S5-grade-20261119-170612-a63d76`: PASS-VISIBLE; test ẩn chưa có.
 - Prepared giảm hoàn sai và lỗi oan xuống 0 nhưng bỏ sót chi phí kho sỉ và hoàn thiếu ở S5-21.
 - Report cho phép cân nhắc Tiếp tục sau khi thu hẹp; đề xuất giữ phạm vi hẹp vì kết quả không chứng minh hiệu quả ở kho đã loại.
 - Chưa đo chi phí thực và đồng bộ sổ trong pilot; kết quả xấu có thể dẫn đến dừng hoặc thay đổi phạm vi.
@@ -495,3 +513,5 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 1. Một giả định về môi trường mà thiết kế của đội đang dựa vào, có thể sai ngoài thực tế: sổ cái hoàn thủ công và tự động được đồng bộ đầy đủ, kịp thời trước mỗi quyết định.
 2. Gate của đội chỉ GIẢM khả năng hay thực sự NGĂN được tác hại? Vì sao: gate giảm khả năng hoàn sai trong dữ liệu thử; sổ thiếu hoặc cập nhật chậm và thao tác ngoài hệ thống vẫn có thể gây hoàn trùng.
 3. Vì data là mock, cần đo lại gì trong pilot thật trước Bước đánh giá 2: đo chi phí máy, công duyệt, chi phí trực và tiền hoàn sai theo từng kho; kiểm ROI, độ phủ, độ trễ đồng bộ sổ và tải hàng chờ trong các ca cao điểm.
+
+**Ghi chú kiểm chứng kỹ thuật:** cập nhật mã report sau sửa nhánh phản hồi retry; số liệu chất lượng, chi phí, ROI và độ phủ không đổi. Không thay quyết định Thu hẹp của trưởng nhóm hoặc ghi nhận thay sự xác nhận của các thành viên khác.
