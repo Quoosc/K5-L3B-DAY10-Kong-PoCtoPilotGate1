@@ -139,12 +139,16 @@ Vận hành và pháp lý:
 
 - Soạn hai dòng HAZOP về quá tải người duyệt và dữ liệu cá nhân gửi sang hãng. Bổ sung góc nhìn vận hành và pháp lý vào pre-mortem.
 - Điền checklist 9 nhóm việc và soạn runbook phần 1–3, gồm ngưỡng cảnh báo, quyền dừng, bàn giao ticket, điều kiện bật lại và phương án trực giờ cao điểm. Phân công thực thi và mốc cảnh báo đề xuất còn chờ nhóm xác nhận.
+- Vòng 2 S5: bổ sung bản đồ dữ liệu chi phí, rà HAZOP và giả định đồng bộ sổ. Cập nhật risk register với điều kiện dừng hoàn và xử lý khi luồng tay quá tải. Đồng bộ checklist 9 nhóm với report cuối và cụ thể hóa Runbook 4–5, gồm người giữ ca, người đối soát, người dừng và người ký bật lại.
+- Đối chiếu metadata với bảng thành viên, quyết định v1/v2 và ba dòng C12, rồi gom và kiểm bài nộp. Dùng Codex để đọc bằng chứng, rà soát và cập nhật tài liệu S5, kiểm metadata và chạy lệnh gom bài.
 
 ### Bằng chứng
 
 - Phiếu B mục B4, B5, B6 và B7.5–B7.6.
 - Report `R-base-prepared-20261119-151853-52ef34` và `config/operating_gates.round1.json`.
+- Phiếu C mục C3.5, C4, C5.3.3, C10–C11 và báo cáo `R-S5-grade-20261119-170612-a63d76`. After ghi 0 ca ùn trên bộ thử và độ phủ 60%. `submission/submission.json` ghi quyết định v2 Thu hẹp.
 
 ### Exit ticket
 
-- Nháp để rà soát: Công suất duyệt trung bình có thể đủ trong bộ nền, nhưng một đợt dồn ca vẫn có thể làm trễ SLA. Cần kiểm khi nào người dự phòng có thể vào ca và chi phí có còn trong ngưỡng ở tải cao điểm hay không.
+- Điều rút ra từ bài: Chuyển tay giúp giữ an toàn khi sổ chưa đồng bộ, đồng thời làm tăng tải duyệt. Cần theo dõi riêng số ca cần duyệt và tuổi hàng chờ để gọi dự phòng trước khi chạm SLA 60 phút.
+- Điều còn cần kiểm: Độ trễ đồng bộ của khoản hoàn tay, công suất thực khi ca đến dồn và chi phí trực dự phòng. Cần xác nhận người dự phòng, quyền dừng và đầu mối thông báo trước pilot.

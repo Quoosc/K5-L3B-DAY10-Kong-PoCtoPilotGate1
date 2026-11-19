@@ -234,6 +234,7 @@ Mở lại Phiếu B mục B3. Ghi ở đây những dòng đổi so với vòng
 |---|---|---|---|
 | `orders.warehouse_id` | Chưa phân tích chi phí theo kho. | Phân khúc HCM-B2B có nhiều ca chuyển người sau khi model đọc. | Prepared 10.382đ/ticket > 10.000đ làm tay; cần định tuyến theo kho. |
 | `ledger_seed` / sổ hoàn | Sổ là nguồn lịch sử hoàn. | Có khoản hoàn một phần trước đó; cần tổng theo đơn và đối chiếu quyền lợi. | Chặn mọi đơn có sổ gây hoàn thiếu S5-21; không kiểm có thể hoàn trùng. |
+| Hóa đơn LLM và nhật ký ca duyệt | Dự toán từ `ops_facts`. | Trước Gate 2, ghép chi phí phát sinh với mã ticket, kho và loại duyệt. Khoản chưa ghép được cần theo dõi riêng để đối soát. | Phát hiện kho vừa tốn tiền máy vừa tốn công người, như HCM-B2B. |
 
 ---
 
@@ -241,23 +242,17 @@ Mở lại Phiếu B mục B3. Ghi ở đây những dòng đổi so với vòng
 
 ## C4 · Câu 3.1 · HAZOP của thẻ (ít nhất 3 dòng, viết bằng dữ kiện của thẻ)
 
-| Dòng | Guideword | Lệch và bằng chứng | Hậu quả | Hiện có / xử lý |
-|---|---|---|---|---|
-| `issue_refund.amount_vnd`, ledger | INCOMPLETE | S5-20@11 base không tính khoản đã hoàn trong sổ | LogiX mất tiền, VNX bị ghi lỗi | `write_gate` đối chiếu sổ trước ghi; tầng chặn |
-| Sổ hoàn một phần | WRONG | S5-21@11 prepared có 10.000đ trước nhưng từ chối cả khoản 12.000đ còn thiếu | Khách thiếu quyền lợi | `write_gate` tính phần còn lại; tầng chặn/điều chỉnh |
-| Nội dung dài và chi phí | INCAPABLE | S5-50@11 base LLM tốn 1.856đ so với trần 1.500đ | Chi phí vượt dự toán | ngân sách LLM và phạm vi kho; tầng vận hành |
-| Sổ đồng bộ trễ | INCOMPLETE | Giả thuyết chưa thấy trong trace: hoàn thủ công ngoài hệ thống chưa vào sổ | Có thể hoàn trùng | đối soát, chuyển người khi không chắc; tầng vận hành, chưa được chứng minh bằng mock |
-
 *Mục riêng, không ghi đè HAZOP vòng 1 ở Phiếu B mục B4. Năm guideword và nghĩa của chúng: xem Phiếu B mục B4.*
 
 Tool chọn phân tích: `issue_refund` và luồng xử lý ticket.
 
 | Tham số / dòng dữ liệu | Guideword (WRONG / INVALID / INCOMPLETE / PERTURBED / INCAPABLE) | Lệch cụ thể (mã ticket, trường dữ liệu của thẻ) | Hậu quả, cho ai | Hiện có gì ngăn? | Gate đề xuất + tầng |
 |---|---|---|---|---|---|
-| ledger | INCOMPLETE | S5-20@11 base không đối chiếu khoản đã hoàn trước | LogiX mất tiền, hãng có thể bị ghi lỗi oan | Gate kiểm tổng sổ trước ghi, tầng chặn |
-| số tiền còn thiếu | WRONG | S5-21@11 prepared chặn dù mới hoàn 10.000đ trên quyền lợi 22.000đ | Khách bị thiếu 12.000đ | Gate tính phần còn lại, tầng điều chỉnh |
-| nội dung ticket | INCAPABLE | S5-50@11 base tiêu 1.856đ LLM trước khi chuyển duyệt | Chi phí vượt trần 1.500đ | Trần chi phí và lọc phạm vi, tầng vận hành |
-| dữ liệu sổ | INCOMPLETE | Giả thuyết chưa thấy trên trace: hoàn thủ công đồng bộ trễ | Nguy cơ hoàn trùng ngoài mock | Đối soát, chuyển người nếu không xác minh, tầng vận hành |
+| ledger | INCOMPLETE | S5-20@11 base không đối chiếu khoản đã hoàn trước | LogiX mất tiền, hãng có thể bị ghi lỗi oan | Sổ có khoản hoàn trước | Kiểm tổng đã hoàn trước lệnh ghi ở tầng cổng |
+| số tiền còn thiếu | WRONG | S5-21@11 prepared chặn dù mới hoàn 10.000đ trên quyền lợi 22.000đ | Khách bị thiếu 12.000đ | Cổng vòng 1 chặn đơn có lịch sử hoàn | Tính và xử lý đúng phần còn lại ở tầng cổng |
+| nội dung ticket | INCAPABLE | S5-50@11 base tiêu 1.856đ LLM trước khi chuyển duyệt | Chi phí vượt trần 1.500đ | Trần 1.500đ đã được khai báo | Áp ngân sách và chuyển tay trước khi phát sinh chi phí vượt trần |
+| định tuyến theo kho | INCAPABLE | S5-51@11 ở HCM-B2B vẫn chuyển người sau bước LLM | Nhóm vận hành trả cả tiền máy lẫn công duyệt | Có mã kho để phân tuyến | Định tuyến HCM-B2B sang luồng tay trước khi gọi LLM |
+| dữ liệu sổ | INCOMPLETE | Giả thuyết cần kiểm trong pilot: hoàn thủ công đồng bộ trễ | Khách có thể nhận hoàn trùng, LogiX mất tiền | Có sổ đối soát nếu giao dịch đã đồng bộ | Giữ ca khi chưa xác minh được số dư và đối soát với kế toán |
 
 Bắt buộc: ít nhất ba dòng, trong đó **một dòng là nhánh bàn chưa thấy trên trace** lúc viết.
 
@@ -277,7 +272,7 @@ Kiểm bằng gì (hàm trong `guards.py`, dòng report nào): đối chiếu `w
 
 Giả định (thứ nằm NGOÀI phần mềm): sổ cái chứa đầy đủ và kịp thời mọi khoản hoàn thủ công lẫn tự động, và mã kho phản ánh đúng loại đơn.
 
-Vì sao có thể sai: sổ đối soát có thể đồng bộ trễ hoặc nhân viên hoàn qua hệ thống khác; phân loại kho có thể thay đổi. Khi không xác minh được phải chuyển người và đối soát, không khẳng định ngăn tuyệt đối hoàn trùng.
+Vì sao có thể sai: khoản hoàn tay có thể đã được hệ thống thanh toán xác nhận nhưng vẫn đang chờ đồng bộ. Trong pilot, Oanh đối chiếu giờ giao dịch xác nhận với giờ ghi sổ và bàn giao cho Hạnh các ca chưa xác minh được số dư trước khi giải ngân.
 
 ---
 
@@ -415,15 +410,11 @@ Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [g
 
 ## C10 · Câu 3.7 · Risk register (thêm ít nhất 1 dòng sau sự cố)
 
-| Rủi ro | Khả năng / tác động | PIC | Dấu hiệu và xử lý | Ảnh hưởng | Nhóm |
-|---|---|---|---|---|---|
-| Sổ hoàn thủ công đồng bộ trễ | Chưa định lượng / cao | Phạm Trấn Quốc | Đối soát hoàn sai trong report > 0: dừng ghi, chuyển duyệt và đối soát | Không mở rộng pilot khi chưa xác minh | MANAGE |
-| Chi phí kho tăng | Trung bình / cao | Phạm Trấn Quốc | `max_warehouse_variable_cost_vnd` > 10.000đ: rà kho và chuyển tay | Giữ phạm vi hẹp | MEASURE |
-
 | Rủi ro | Khả năng | Tác động | Người phụ trách (PIC, một người) | Dấu hiệu (metric nào, ngưỡng nào) | Xử lý | Ảnh hưởng bước đánh giá | Nhóm chức năng (GOVERN / MAP / MEASURE / MANAGE) |
 |---|---|---|---|---|---|---|---|
-| Sổ hoàn thủ công đồng bộ trễ | Chưa định lượng | Cao | Phạm Trấn Quốc | Report hoàn sai > 0; dừng ghi và đối soát | Chưa mở rộng cho đến khi xác minh | MANAGE |
-| Chi phí kho tăng | Trung bình | Cao | Phạm Trấn Quốc | `max_warehouse_variable_cost_vnd` > 10.000đ; rà kho, chuyển tay | Giữ phạm vi hẹp | MEASURE |
+| Sổ hoàn thủ công đồng bộ trễ | Chưa định lượng | Cao | Nguyễn Quang Dũng | `wrongful_refund_vnd > 0` sau đối soát | Kích hoạt Runbook 3 để dừng `issue_refund`. Oanh đối chiếu sổ với giao dịch thanh toán, Hạnh giữ ca chưa rõ số dư. | Tạm dừng hoàn tự động đến khi xác minh được dữ liệu và thử lại ca lỗi | MANAGE |
+| Chi phí kho tăng | Trung bình | Cao | Phạm Trấn Quốc | `max_warehouse_variable_cost_vnd > 10000` | Xác định kho, đối chiếu chi phí thực và chuyển tay | Giữ phạm vi hẹp | MEASURE |
+| Dồn ca sau khi chuyển sang luồng thủ công | Chưa định lượng | Cao | Nguyễn Quang Dũng | `queue_wait_max_min >= 60` hoặc `queue_stuck > 0` | Hạnh bàn giao ca theo tuổi hàng chờ và báo Quốc thu hẹp lượng ticket mới vào pilot | Giữ phạm vi hẹp đến khi diễn tập đạt SLA | MANAGE |
 
 Quy tắc: **mỗi dòng phải đổi được một quyết định.** Cột "Dấu hiệu" phải là một metric có trong `monitors.py` hoặc trong report.
 
@@ -433,19 +424,13 @@ Quy tắc: **mỗi dòng phải đổi được một quyết định.** Cột "
 
 ## C11 · Câu 3.7 · Cập nhật checklist 9 nhóm việc và Runbook phần 4–5
 
-**Cập nhật:** chất lượng Xong trên visible (Trần Anh Dũng, report `R-S5-grade-20261119-164717-5b399f`); dữ liệu Chưa xác minh đồng bộ thật (Phạm Trấn Quốc, C3.5); chi phí Xong trên mock, Chưa trên pilot thật (Phạm Trấn Quốc, C8); vận hành và pháp lý Chưa diễn tập dừng hoặc xác nhận đầu mối thực (Nguyễn Quang Dũng). Các nhóm checklist khác giữ trạng thái B5; không coi thử mock là diễn tập thực.
-
-**Runbook 4 đề xuất:** PIC Phạm Trấn Quốc theo dõi C8 và report theo ca; cảnh báo vàng >5.000đ, đỏ >10.000đ/ticket theo kho. Giữ 1 người duyệt, 6 ca/giờ, 10% kiểm mẫu; HCM-B2B xử lý tay. Khi nghi hoàn sai, tắt `issue_refund`, chuyển hàng đợi cho NV-HANH và đối soát với kế toán. Nguyễn Quang Dũng liên hệ bên ảnh hưởng qua kênh vận hành sau xác minh; thời hạn thông báo cần xác nhận. Không có PII leak trong report giả lập; chưa kết luận dữ liệu thật. S5 xuất phát từ thông báo CFO, dữ liệu chi phí thực và xác nhận vận hành còn thiếu.
-
-**Runbook 5 đề xuất:** (1) Nếu tải tăng gấp 3, theo dõi chờ và ùn, gọi người dự phòng; quá 60 phút hoặc có ca ùn thì thu hẹp và chuyển tay. (2) Nếu LLM lỗi quá 5 phút, tắt thao tác ghi liên quan và chuyển tay; kiểm phục hồi trước bật lại. (3) Nếu người duyệt không tin quyết định, tạm giữ ca, cung cấp decision_note và sổ đối soát cho NV-HANH, lấy mẫu và chỉ bật lại sau xác nhận của PIC.
-
 ### Cập nhật checklist (bảng gốc ở Phiếu B mục B5)
 
 Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có tên.
 
 | # nhóm | Trạng thái mới (Xong / Chưa / Không áp dụng) | Bằng chứng mới (mã lần chạy, mục phiếu, số trong report) | PIC |
 |---|---|---|---|
-| 1 Chất lượng | Xong trên mock | S5 after và regression đạt trong `R-S5-grade-20261119-164717-5b399f` | Trần Anh Dũng |
+| 1 Chất lượng | Xong | `R-S5-grade-20261119-170612-a63d76`: PASS-VISIBLE, S5 90/90 và bộ nền 110/110 | Trần Anh Dũng |
 | 2 Dữ liệu | Chưa | C3.5: chưa xác minh đồng bộ sổ thực | Phạm Trấn Quốc |
 | 3 Bảo mật | Chưa | Mock có 0 PII, cần xác minh trước pilot thực | Nguyễn Quốc Quang Anh |
 | 4 Quyền hạn | Chưa | Switch và gate có trong config; chưa diễn tập quyền bấm và phê duyệt thực | Nguyễn Quốc Quang Anh |
@@ -463,15 +448,15 @@ Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có 
 | Bàn thêm hoặc đổi ngưỡng nào, từ bao nhiêu thành bao nhiêu? | Giữ trần LLM 1.500đ, thêm cảnh báo kho >5.000đ và >10.000đ; không đổi tiêu chí đã ký. |
 | Bàn đổi gì về **người** (số người trực, ai đứng tên, ai được gọi)? | Giữ một người duyệt, 6 ca/giờ; NV-HANH duyệt, Phạm Trấn Quốc điều phối; người dự phòng cần xác nhận. |
 | Bàn đổi gì về **phạm vi** hoặc **quy trình** (kiểm mẫu, ghi chú giải thích, trần)? | HCM-B2B làm tay; giữ kiểm mẫu 10%, decision_note và trần hoàn ngày 2.000.000đ. |
-| Nói gì với bên thứ ba bị ảnh hưởng (hãng, shop, người nhận, nhân viên duyệt), ai nói, trong bao lâu? | Nguyễn Quang Dũng thông báo kết quả đối soát và kênh phản hồi sau xác minh; thời hạn và kênh thực cần xác nhận. |
-| Dữ liệu cá nhân nào đã rời hệ thống mà không thu hồi được? Báo cho ai? | Report mock ghi 0 PII leak; chưa có kiểm toán dữ liệu thực. Nếu phát hiện, báo PIC và phụ trách pháp lý để xử lý. |
+| Nói gì với bên thứ ba bị ảnh hưởng (hãng, shop, người nhận, nhân viên duyệt), ai nói, trong bao lâu? | Dũng điều phối và Oanh liên hệ bên bị ảnh hưởng qua kênh đã xác minh, dùng mã vụ việc, kết quả đã đối soát, biện pháp khắc phục và đầu mối phản hồi. Đề xuất cập nhật trong ca phát hiện, mốc thông báo cần nhóm xác nhận trước pilot. |
+| Dữ liệu cá nhân nào đã rời hệ thống mà không thu hồi được? Báo cho ai? | Report S5 after ghi 0 PII leak trên mock. Nếu phát hiện dữ liệu thật đã gửi ra ngoài, Tùng dừng tuyến gửi liên quan, Dũng báo Quốc và đầu mối bảo vệ dữ liệu, lưu bằng chứng ở nơi hạn chế truy cập. |
 | Sự cố lộ ra trước qua số máy đo, phản hồi của người, hay đọc nội dung? Nguồn nào bàn chưa có? | Email CFO trên thẻ; thiếu hóa đơn model và đối soát thực theo kho. |
 
 ### Runbook 5 · Ba kịch bản "nếu … thì …" cho tuần đầu chạy thử thật
 
-1. Nếu số ticket tăng gấp 3 lần trong một giờ thì: theo dõi chờ và ùn, gọi dự phòng; quá 60 phút hoặc có ca ùn thì thu hẹp và chuyển tay.
-2. Nếu nhà cung cấp LLM lỗi quá 5 phút thì: tắt thao tác ghi liên quan, chuyển tay và kiểm phục hồi trước khi bật lại; mốc 5 phút là đề xuất cần xác nhận.
-3. Nếu người duyệt báo không tin một quyết định của trợ lý thì: giữ ca, đưa decision_note và sổ đối soát cho NV-HANH, kiểm mẫu và chỉ bật lại sau xác nhận của PIC.
+1. Nếu số ticket tăng gấp ba trong một giờ, Hạnh theo dõi riêng số ca cần duyệt so với công suất 6 ca/giờ. Gọi dự phòng khi có từ 4 ca chưa nhận hoặc ca lâu nhất chờ từ 30 phút. Khi chờ từ 60 phút hoặc có ca ùn, Quốc thu hẹp lượng ca mới vào pilot và Hạnh bàn giao theo tuổi hàng chờ.
+2. Nếu nhà cung cấp LLM lỗi liên tục 5 phút, Tùng ngừng nhận ticket mới vào luồng AI và tắt thao tác ghi liên quan. Hạnh bàn giao ca sang luồng tay sau khi Oanh xác minh trạng thái giao dịch. Quốc ký bật lại theo Runbook 3 sau khi thử ca lỗi và đối soát kết quả. Mốc 5 phút là đề xuất cần xác nhận.
+3. Nếu người duyệt nghi ngờ một quyết định, Hạnh giữ ca và đối chiếu `decision_note`, chính sách và số dư với Oanh. Nếu phát hiện chênh lệch có thể ảnh hưởng nhiều ca, Quốc tạm dừng thao tác liên quan theo Runbook 3. Sau khi xử lý nguyên nhân, Hạnh kiểm lại ca lỗi trước khi Quốc ký bật lại.
 
 ---
 
