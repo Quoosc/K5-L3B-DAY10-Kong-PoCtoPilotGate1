@@ -6,12 +6,12 @@
     "TranAnhDung-2A202604037",
     "NguyenQuangDung-2A202604031"
   ],
-  "incident": "",
+  "incident": "S5",
   "decision_v1": "Tiếp tục",
-  "decision_v2": "",
+  "decision_v2": "Thu hẹp",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "sổ cái hoàn thủ công và tự động được đồng bộ đầy đủ, kịp thời trước mỗi quyết định.",
+    "reduce_or_prevent": "gate giảm khả năng hoàn sai trong dữ liệu thử; sổ thiếu hoặc cập nhật chậm và thao tác ngoài hệ thống vẫn có thể gây hoàn trùng.",
+    "measure_in_pilot": "đo chi phí máy, công duyệt, chi phí trực và tiền hoàn sai theo từng kho; kiểm ROI, độ phủ, độ trễ đồng bộ sổ và tải hàng chờ trong các ca cao điểm."
   }
 }

@@ -19,7 +19,22 @@ def escalation_rate(trials):
     return sum(t["status"] == "escalated" for t in trials) / max(1, len(trials))
 
 
+def max_warehouse_variable_cost_vnd(trials):
+    """Highest per-ticket machine plus estimated review cost among known warehouses."""
+    totals = {}
+    for trial in trials:
+        warehouse = trial.get("warehouse")
+        if not warehouse:
+            continue
+        kind = trial.get("review_kind")
+        units = 1 if kind == "escalated" else 0.4 if kind == "recheck" else 0
+        total, count = totals.get(warehouse, (0, 0))
+        totals[warehouse] = (total + trial.get("cost_vnd", 0) + units * 10000, count + 1)
+    return max((total / count for total, count in totals.values()), default=0)
+
+
 MONITORS = {
     "escalation_rate": escalation_rate,     # có sẵn; KHÔNG tính là metric mới của đội
+    "max_warehouse_variable_cost_vnd": max_warehouse_variable_cost_vnd,
 }
 STARTER_MONITORS = ("escalation_rate",)

@@ -63,9 +63,9 @@ def write_gate(ctx, action):
     if tool == "issue_refund":
         if action.get("order_id") != order["order_id"] or action.get("ticket_id") != ctx.ticket["ticket_id"]:
             return Verdict.escalate("lệnh hoàn không khớp đơn hoặc ticket")
-        if ctx.tools.ledger_rows(order_id=order["order_id"]):
-            ctx.log("refund_duplicate_blocked", order_id=order["order_id"])
-            return Verdict.deny("sổ cái đã có khoản hoàn cho đơn, không ghi lần nữa")
+        prior = ctx.tools.ledger_rows(order_id=order["order_id"])
+        if any(not isinstance(r.get("amount_vnd"), int) or r["amount_vnd"] < 0 for r in prior):
+            return Verdict.escalate("sổ hoàn không hợp lệ, cần đối soát")
         if parcel.get("delay_cause") is None and delay > 0:
             return Verdict.escalate("tracking chưa ghi nguyên nhân trễ, cần xác minh")
         if action.get("basis") != "policy":
@@ -95,6 +95,14 @@ def write_gate(ctx, action):
             )
             if not valid:
                 return Verdict.escalate("phê duyệt thiếu, hết hiệu lực hoặc không đúng thẩm quyền/ticket")
+        paid = sum(r["amount_vnd"] for r in prior)
+        remaining = expected - paid
+        if remaining <= 0:
+            ctx.log("refund_duplicate_blocked", order_id=order["order_id"])
+            return Verdict.deny("đơn đã được hoàn đủ hoặc vượt quyền lợi")
+        if prior:
+            ctx.log("refund_remaining", entitlement_vnd=expected, paid_vnd=paid, remaining_vnd=remaining)
+            return Verdict.modify("chỉ hoàn phần quyền lợi còn thiếu theo sổ cái", amount_vnd=remaining)
 
     # G2: attribute a strike to the actual parcel, using recorded tracking facts.
     if tool == "file_carrier_fault":
