@@ -48,7 +48,7 @@ Trưởng nhóm · Sản phẩm và kinh doanh:
 - File khóa niêm phong: `config/acceptance_criteria.lock` (hash: `0f2b62d6a8fe7de0d19cb5c4c0f13c72aa8d2b90a38fafa048cfd19d67846ff9`).
 - File cấu hình: `config/acceptance_criteria.json`, `config/operating_gates.json` (mục `business`).
 - Tài liệu: `templates/form-a-criteria.md` (mục A1–A5), `templates/form-b-evaluation-gates.md` (mục B3, B7.4).
-- Báo cáo S5: `R-S5-grade-20261119-164717-5b399f`, mốc after `R-S5-after-20261119-164718-5b399f` (PASS-VISIBLE, chưa có test ẩn).
+- Báo cáo S5: `R-S5-grade-20261119-170612-a63d76`, mốc after `R-S5-after-20261119-170615-a63d76` (PASS-VISIBLE: 6/6 kiểm tra đạt).
 
 ### Exit ticket
 
