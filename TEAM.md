@@ -39,7 +39,7 @@ Trưởng nhóm · Sản phẩm và kinh doanh:
 - Thực thi ký niêm phong Bản tiêu chí chấp nhận bằng lệnh `python -m lab10.criteria sign` đúng quy định trước khi chạy đánh giá.
 - Hoàn thiện Bản đồ dữ liệu hệ thống và phân tích kịch bản drift chính sách trong 3 tháng tới tại Phiếu B mục B3.
 - Cấu hình các cổng kinh doanh trong `config/operating_gates.json` mục `business` và lập luận lý do dựa trên `ops_limits` và `ops_facts`.
-- Vòng 2 S5: phân tích chi phí theo kho và phạm vi pilot, viết C1, C3.5, C5, C8 và đề xuất quyết định v2 tại C12; dùng trợ lý AI để phân tích, sửa cổng hoàn phần còn thiếu và xây monitor chi phí.
+- Vòng 2 S5: phân tích chi phí theo kho và phạm vi pilot, viết C1, C3.5, C5, C8 và xác nhận quyết định v2 Thu hẹp tại C12; dùng trợ lý AI để phân tích, sửa cổng hoàn phần còn thiếu và xây monitor chi phí.
 
 ### Bằng chứng
 
@@ -48,7 +48,7 @@ Trưởng nhóm · Sản phẩm và kinh doanh:
 - File khóa niêm phong: `config/acceptance_criteria.lock` (hash: `0f2b62d6a8fe7de0d19cb5c4c0f13c72aa8d2b90a38fafa048cfd19d67846ff9`).
 - File cấu hình: `config/acceptance_criteria.json`, `config/operating_gates.json` (mục `business`).
 - Tài liệu: `templates/form-a-criteria.md` (mục A1–A5), `templates/form-b-evaluation-gates.md` (mục B3, B7.4).
-- Báo cáo S5: `R-S5-grade-20261119-163938-6fd3ce`, mốc after `R-S5-after-20261119-163939-6fd3ce` (PASS-VISIBLE, chưa có test ẩn).
+- Báo cáo S5: `R-S5-grade-20261119-164317-a4ba0f`, mốc after `R-S5-after-20261119-164319-a4ba0f` (PASS-VISIBLE, chưa có test ẩn).
 
 ### Exit ticket
 
